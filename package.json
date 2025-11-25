@@ -1,0 +1,31 @@
+{
+  "name": "sudan_embassy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "backend": "node server/index.js",
+    "dev:all": "concurrently -k \"npm:dev:server\" \"npm:dev:client\"",
+    "dev": "npm run dev:all",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abd210/sudan_embassy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abd210/sudan_embassy/issues"
+  },
+  "homepage": "https://github.com/Abd210/sudan_embassy#readme",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  },
+  "dependencies": {
+    "firebase": "^12.1.0"
+  }
+}

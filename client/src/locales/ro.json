@@ -1,0 +1,162 @@
+{
+  "common": {
+    "language": { "en": "Engleză", "ro": "Română", "ar": "العربية" },
+    "learn_more": "Află mai mult",
+    "view_all": "Vezi tot",
+    "get_directions": "Obține indicații",
+    "send": "Trimite",
+    "submit": "Trimite",
+    "submitting": "Se trimite...",
+    "download": "Descarcă",
+    "no_results": "Niciun rezultat.",
+    "loading": "Se încarcă...",
+    "submitted_success": "Trimis cu succes"
+  },
+  "promo": {
+    "meroe_title": "Comori ascunse – Turism cultural",
+    "meroe_subtitle": "Un grup de aproape 200 de piramide antice, numite piramidele de la Meroë, după Regatul Meroitic care a stăpânit zona peste 900 de ani. Au fost construite acum peste 2.000 de ani.",
+    "police_title": "Utilizarea platformei electronice de raportare a Poliției Sudaneze",
+    "police_subtitle": "Puteți folosi platforma electronică a Poliției Sudaneze pentru a raporta cazuri de agresiune asupra persoanei sau proprietății, vehiculelor ori bunurilor personale.",
+    "cta": "Accesează"
+  },
+  "nav": {
+    "home": "Acasă",
+    "consular": "Servicii consulare",
+    "appointments": "Programări",
+    "news": "Știri și alerte",
+    "about": "Despre Sudan",
+    "overview": "Prezentare generală",
+    "about_brief": "Pe scurt despre Sudan",
+    "about_travel": "Metode de călătorie",
+    "about_culture": "Cultură",
+    "about_tourism": "Turism",
+    "about_visiting": "Vizitarea Sudanului",
+    "contact": "Contact",
+    "book_appointment": "Programează-te"
+  },
+  "hero": {
+    "title": "Ambasada Republicii Sudan",
+    "subtitle": "București, România",
+    "cta1": "Programează-te",
+    "cta2": "Servicii consulare",
+    "paragraph": "Deservim cetățenii sudanezi și facilităm relațiile diplomatice și consulare între Sudan și România."
+  },
+  "footer": {
+    "embassy": "Ambasada Sudanului",
+    "quick_links": "Linkuri rapide",
+    "popular_services": "Servicii populare",
+    "follow_us": "Urmărește-ne",
+    "copyright": "© 2023 Ambasada Republicii Sudan la București. Toate drepturile rezervate.",
+    "quick": ["Acasă","Servicii consulare","Programează-te","Știri și alerte","Contactează-ne"],
+    "popular": ["Reînnoire pașaport","Cereri viză","Autentificare documente","Număr național","Document de călătorie de urgență"]
+  },
+  "services": { "title": "Servicii populare" },
+  "news": {
+    "title": "Ultimele știri și anunțuri",
+    "read_more": "Citește mai mult",
+    "back": "← Înapoi la știri",
+    "tag_update": "Actualizare"
+  },
+  "forms": {
+    "title": "Formulare și descărcări",
+    "view_all": "Vezi toate formularele și documentele",
+    "submit_filled": "Trimite formularul completat",
+    "submit_help": "Încarcă PDF-ul sau imaginea completată și oferă datele de contact. Vom reveni cu un răspuns.",
+    "related_form": "Formular asociat (opțional)",
+    "full_name": "Nume complet",
+    "email": "Email",
+    "phone": "Telefon",
+    "notes": "Note (opțional)",
+    "upload_filled": "Încarcă fișierul completat (PDF sau imagine)"
+  },
+  "map": { "title": "Locație și indicații" },
+  "alert": { "important": "ANUNȚ IMPORTANT" },
+  "status": {
+    "embassy_status": "Starea ambasadei",
+    "holiday_notice": "Anunț de sărbătoare",
+    "next_available": "Următoarea programare disponibilă"
+  },
+  "contact": {
+    "title": "Contactează-ne",
+    "name": "Nume",
+    "your_name": "Numele tău",
+    "email": "Email",
+    "message": "Mesaj",
+    "how_help": "Cu ce te putem ajuta?",
+    "info": "Informații de contact",
+    "emergency": "Contact de urgență",
+    "emergency_outside": "Pentru urgențe în afara programului:",
+    "emergency_guidelines": "Ghid de urgență",
+    "embassy_hours": "Programul ambasadei",
+    "mon_thu": "Luni - Joi",
+    "fri": "Vineri",
+    "sat_sun": "Sâmbătă - Duminică",
+    "closed": "Închis",
+    "consular_section": "Secția consulară",
+    "applications_accepted": "Depunere cereri: 10:00 - 13:00",
+    "document_collection": "Ridicare documente: 14:00 - 15:30"
+  },
+  "about": {
+    "title": "Despre Sudan",
+    "overview_p1": "Republica Sudan este o țară din Africa de Nord-Est. Această pagină va include istorie, cultură și recomandări de călătorie. Conținutul este provizoriu și poate fi conectat ulterior la un CMS sau backend.",
+    "overview_p2": "Pentru informații oficiale, vă rugăm să contactați Ambasada pentru cele mai recente actualizări și resurse.",
+    "brief_title": "Pe scurt: Sudan",
+    "brief_where": "Unde este situat Sudanul?",
+    "brief_p1": "Sudanul se află în nord‑estul Africii și ocupă 1.886.000 km², fiind a treia cea mai mare țară din Africa ca suprafață. Se învecinează cu șapte țări și Marea Roșie și găzduiește cel mai lung fluviu din lume, Nilul. Înainte de separarea Sudanului de Sud în 2011, Sudanul era cea mai mare țară din Africa.",
+    "brief_list1": [
+      "Populație: 47.958.856 (2022)",
+      "Monedă: Lira sudaneză (SDG)",
+      "Limbi oficiale: araba și engleza",
+      "Suprafață totală: 1.886.068 km² (locul 16 în lume)",
+      "State: 18"
+    ],
+    "brief_list2": [
+      "PIB nominal: 187 mld. $ | Pe cap de locuitor: 4.586 $",
+      "Litoral: 853 km la Marea Roșie",
+      "Confluența Nilului Alb/Albastru la Khartoum",
+      "Alte afluenți: Bahr el Ghazal, Sobat, Atbarah",
+      "Granițe: Libia, Sudanul de Sud, Egipt, Etiopia, Eritreea, Ciad, RCA"
+    ],
+    "brief_p2": "Sistemul metric este standardul legal în Sudan; măsurile tradiționale sunt uneori folosite local.",
+    "travel_title": "Metode de călătorie către Sudan",
+    "culture_title": "Cultura Sudanului",
+    "tourism_title": "Turism în Sudan",
+    "visiting_title": "Vizitarea Sudanului"
+  },
+  "pages": {
+    "consular_services": "Servicii consulare",
+    "learn_more": "Află mai mult",
+    "no_services": "Nu sunt servicii disponibile.",
+    "alerts": "Alerte",
+    "no_alerts": "Nicio alertă.",
+    "news_and_announcements": "Știri și anunțuri",
+    "book_appointment": "Programează-te",
+    "choose_service": "Alege un serviciu și data preferată.",
+    "full_name": "Nume complet",
+    "preferred_date": "Data preferată",
+    "any_additional": "Alte informații",
+    "submit": "Trimite",
+    "back_news": "← Înapoi la știri"
+  },
+  "appointments": {
+    "service": "Serviciu",
+    "opt_passport": "Servicii pașaport",
+    "opt_visa": "Cereri viză",
+    "opt_authentication": "Autentificare documente",
+    "opt_national_number": "Număr național"
+  },
+  "admin": {
+    "login": "Autentificare administrator",
+    "dashboard": "Panou de administrare",
+    "logout": "Deconectare",
+    "loading": "Se încarcă..."
+  },
+  "upload": {
+    "drop_here": "Plasează fișierul aici...",
+    "drag_or_click": "Trage și plasează fișierul aici sau fă clic pentru a selecta",
+    "selected": "Selectat",
+    "no_preview": "Fără previzualizare"
+  }
+}
+
+

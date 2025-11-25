@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build outputs
+dist/
+build/
+client/dist/
+server/dist/
+.vite/
+.cache/
+.parcel-cache/
+.turbo/
+
+# Logs
+logs/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Env files (do not commit real secrets)
+.env
+.env.*
+!.env.example
+client/.env
+client/.env.*
+!client/.env.example
+server/.env
+server/.env.*
+!server/.env.example
+
+# Firebase / credentials (never commit)
+.firebase/
+firebase-debug.log
+serviceAccount*.json
+*serviceAccount*.json
+firebase-admin*.json
+**/firebase-sa-key.json
+*.serviceAccountKey.json
+*.private-key.json
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Misc
+.eslintcache
+coverage/
+*.local
+node_modules
+uploads

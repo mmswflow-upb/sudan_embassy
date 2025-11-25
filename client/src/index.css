@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind is provided via CDN in index.html for an exact visual match */
+html, body { height: 100%; }
+::-webkit-scrollbar { display: none; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Smooth scrolling and selection color */
+html { scroll-behavior: smooth; }
+::selection { background: #007229; color: #fff; }
+
+/* Utility skins */
+.glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0,0.10);
+}
+.card-hover {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 30px rgba(0,0,0,0.15);
+}
+
+/* Smooth snap for horizontal carousels */
+.snap-x { scroll-snap-type: x mandatory; }
+.snap-start { scroll-snap-align: start; }
+.btn-flag {
+  background: linear-gradient(90deg,#007229 0%,#000 100%);
+}
+
+/* Page transition */
+.page-fade-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .4s ease, transform .4s ease;
+}
+
+/* Ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple::after {
+  content: '';
+  position: absolute;
+  left: var(--ripple-x, 50%);
+  top: var(--ripple-y, 50%);
+  width: 0;
+  height: 0;
+  background: rgba(255,255,255,0.35);
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+.ripple.is-animating::after {
+  animation: rippleExpand .6s ease-out;
+}
+@keyframes rippleExpand {
+  0% { width: 0; height: 0; opacity: .5; }
+  100% { width: 500px; height: 500px; opacity: 0; }
+}
+
+/* Ken Burns */
+.kenburns {
+  animation: kenBurns 14s ease-in-out infinite;
+}
+@keyframes kenBurns {
+  0% { transform: scale(1) translate3d(0,0,0); }
+  50% { transform: scale(1.08) translate3d(0, -6px, 0); }
+  100% { transform: scale(1) translate3d(0,0,0); }
+}
+
+/* Tilt on hover */
+.tilt {
+  transform: perspective(800px) rotateX(0) rotateY(0) translateZ(0);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.tilt:hover {
+  transform: perspective(800px) rotateX(1.2deg) rotateY(-1.2deg) translateZ(4px);
+  box-shadow: 0 16px 30px rgba(0,0,0,0.18);
+}
+
+/* Header shrink */
+.header {
+  transition: padding .25s ease, background-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+.header.is-scrolled {
+  background-image: linear-gradient(90deg, #0b7a34 0%, #0a6b47 50%, #0033A0 100%);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+
+/* Section title accent: small red bar + subtle bottom rule in black */
+.sudan-section-title {
+  position: relative;
+  padding-left: 16px;
+}
+.sudan-section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 22px;
+  background: #D21034; /* Sudan red */
+  border-radius: 2px;
+}
+.sudan-section-title::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 0;
+  bottom: -6px;
+  height: 1px;
+  background: rgba(0,0,0,0.15);
+}
+
+/* Decorative blobs */
+.bg-blob {
+  filter: blur(60px);
+  opacity: .25;
+}
+

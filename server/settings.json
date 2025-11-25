@@ -1,0 +1,62 @@
+{
+  "header": {
+    "phone": "+40 21 123 4567",
+    "email": "info@sudanembassy.ro"
+  },
+  "receiveEmail": "abdalrahman1232023@gmail.com",
+  "address": "123 Diplomatic Street, Sector 1, Bucharest, Romania",
+  "hero": {
+    "title": "Embassy of the Republic of Sudan",
+    "subtitle": "Bucharest, Romania",
+    "cta1": "Book Appointment",
+    "cta2": "Consular Services"
+  },
+  "hours": {
+    "monThu": "9:00 AM - 4:00 PM",
+    "fri": "9:00 AM - 1:00 PM"
+  },
+  "statusBar": {
+    "status": "Open today: 9:00 AM - 4:00 PM",
+    "holiday": "today",
+    "nextAppointment": "tommorow"
+  },
+  "emergency": {
+    "phone": "+40 722 123 456",
+    "note": "This number is for genuine emergencies only"
+  },
+  "contacts": [
+    [
+      "fa-solid fa-location-dot",
+      "123 Diplomatic Street, Sector 1, Bucharest, Romania"
+    ],
+    [
+      "fa-solid fa-phone",
+      "+40 21 123 4567"
+    ],
+    [
+      "fa-solid fa-envelope",
+      "info@sudanembassy.ro"
+    ]
+  ],
+  "map": {
+    "lat": 44.4467127,
+    "lng": 26.1035968,
+    "placeLink": "https://www.google.com/maps/place/Ambasada+Republicii+Sudan/@44.447707,26.1031946,17.77z/data=!4m6!3m5!1s0x40b1ff8fd7ba51a9:0x1bea18766dc4de4c!8m2!3d44.4467127!4d26.1035968!16s%2Fg%2F11vbypp9cb?entry=ttu"
+  },
+  "promoSlides": [
+    {
+      "title": "Hidden Treasures Cultural Tourism",
+      "subtitle": "—",
+      "cta": "Click Here",
+      "href": "https://artsexperiments.withgoogle.com/meroe/",
+      "image": "/images/1ss.jpg"
+    },
+    {
+      "title": "Using the Sudanese Police Electronic Reporting Platform",
+      "subtitle": "—",
+      "cta": "Click Here",
+      "href": "https://www.sudanpolice.net/",
+      "image": "/images/2ss.jpg"
+    }
+  ]
+}

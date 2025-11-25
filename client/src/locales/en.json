@@ -1,0 +1,143 @@
+{
+  "common": {
+    "language": { "en": "English", "ro": "Romanian", "ar": "العربية" },
+    "learn_more": "Learn more",
+    "view_all": "View All",
+    "get_directions": "Get Directions",
+    "send": "Send",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "download": "Download",
+    "no_results": "No results.",
+    "loading": "Loading...",
+    "submitted_success": "Submitted successfully"
+  },
+  "promo": {
+    "meroe_title": "Hidden Treasures Cultural Tourism",
+    "meroe_subtitle": "A Group of almost 200 ancient pyramids, called the Meroë pyramids, after the Meroitic Kingdom that reigned over the area for over 900 years. They were built over 2,000 years ago.",
+    "police_title": "Using the Sudanese Police Electronic Reporting Platform",
+    "police_subtitle": "You can now use the electronic reporting platform belonging to the Sudanese Police Forces to report cases of assault on the self, or property, vehicles, or personal possessions.",
+    "cta": "Click Here"
+  },
+  "nav": {
+    "home": "Home",
+    "consular": "Consular Services",
+    "appointments": "Appointments",
+    "news": "News & Alerts",
+    "about": "About Sudan",
+    "overview": "Overview",
+    "about_brief": "In brief Sudan",
+    "about_travel": "Methods of travel",
+    "about_culture": "Culture",
+    "about_tourism": "Tourism",
+    "about_visiting": "Visiting Sudan",
+    "contact": "Contact",
+    "book_appointment": "Book Appointment"
+  },
+  "hero": {
+    "title": "Embassy of the Republic of Sudan",
+    "subtitle": "Bucharest, Romania",
+    "cta1": "Book Appointment",
+    "cta2": "Consular Services",
+    "paragraph": "Serving Sudanese citizens and facilitating diplomatic and consular relations between Sudan and Romania."
+  },
+  "footer": {
+    "embassy": "Embassy of Sudan",
+    "quick_links": "Quick Links",
+    "popular_services": "Popular Services",
+    "follow_us": "Follow Us",
+    "copyright": "© 2023 Embassy of the Republic of Sudan in Bucharest. All rights reserved.",
+    "quick": ["Home", "Consular Services", "Book Appointment", "News & Alerts", "Contact Us"],
+    "popular": ["Passport Renewal", "Visa Applications", "Document Authentication", "National Number", "Emergency Travel Document"]
+  },
+  "services": { "title": "Popular Services" },
+  "news": { "title": "Latest News & Announcements", "read_more": "Read more", "back": "← Back to news", "tag_update": "Update" },
+  "forms": {
+    "title": "Forms & Downloads",
+    "view_all": "View all forms and documents",
+    "submit_filled": "Submit your filled form",
+    "submit_help": "Upload your completed PDF or image and provide your contact details. We will review and reach back to you.",
+    "related_form": "Related form (optional)",
+    "full_name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "notes": "Notes (optional)",
+    "upload_filled": "Upload filled file (PDF or image)"
+  },
+  "map": { "title": "Location & Directions" },
+  "alert": { "important": "IMPORTANT NOTICE" },
+  "status": { "embassy_status": "Embassy Status", "holiday_notice": "Holiday Notice", "next_available": "Next Available Appointment" },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Name",
+    "your_name": "Your name",
+    "email": "Email",
+    "message": "Message",
+    "how_help": "How can we help?",
+    "info": "Contact Information",
+    "emergency": "Emergency Contact",
+    "emergency_outside": "For emergencies outside regular working hours:",
+    "emergency_guidelines": "Emergency Guidelines",
+    "embassy_hours": "Embassy Hours",
+    "mon_thu": "Monday - Thursday",
+    "fri": "Friday",
+    "sat_sun": "Saturday - Sunday",
+    "closed": "Closed",
+    "consular_section": "Consular Section",
+    "applications_accepted": "Applications accepted: 10:00 AM - 1:00 PM",
+    "document_collection": "Document collection: 2:00 PM - 3:30 PM"
+  },
+  "about": {
+    "title": "About Sudan",
+    "overview_p1": "The Republic of Sudan is a country in Northeast Africa. This page will include history, culture, and travel advisories. Content is placeholder and ready to be connected to CMS or backend later.",
+    "overview_p2": "For official information, please contact the Embassy for the latest updates and resources.",
+    "brief_title": "In brief: Sudan",
+    "brief_where": "Where is Sudan located?",
+    "brief_p1": "Sudan is located in the north‑eastern part of Africa and occupies 1,886,000 square kilometers, making it Africa’s 3rd largest country by area. It borders seven countries and the Red Sea, and hosts the world’s longest river, the Nile. Before the secession of South Sudan in 2011, Sudan was the largest country in Africa.",
+    "brief_list1": [
+      "Population: 47,958,856 (2022)",
+      "Currency: Sudanese Pound (SDG)",
+      "Official languages: Arabic and English",
+      "Total area: 1,886,068 km² (16th largest worldwide)",
+      "States: 18"
+    ],
+    "brief_list2": [
+      "Nominal GDP: $187B | Per capita: $4,586",
+      "Coastline: 853 km on the Red Sea",
+      "White/Blue Nile meet at Khartoum",
+      "Other tributaries: Bahr el Ghazal, Sobat, Atbarah",
+      "Borders: Libya, South Sudan, Egypt, Ethiopia, Eritrea, Chad, CAR"
+    ],
+    "brief_p2": "The metric system is the legal standard in Sudan; traditional measures are sometimes used locally.",
+    "travel_title": "Methods of travel to Sudan",
+    "culture_title": "Culture of Sudan",
+    "tourism_title": "Tourism in Sudan",
+    "visiting_title": "Visiting Sudan"
+  },
+  "pages": {
+    "consular_services": "Consular Services",
+    "learn_more": "Learn more",
+    "no_services": "No services available.",
+    "alerts": "Alerts",
+    "no_alerts": "No alerts.",
+    "news_and_announcements": "News & Announcements",
+    "book_appointment": "Book Appointment",
+    "choose_service": "Choose a service and preferred date.",
+    "full_name": "Full Name",
+    "preferred_date": "Preferred Date",
+    "any_additional": "Any additional info",
+    "submit": "Submit",
+    "back_news": "← Back to news"
+  },
+  "appointments": {
+    "service": "Service",
+    "opt_passport": "Passport Services",
+    "opt_visa": "Visa Applications",
+    "opt_authentication": "Document Authentication",
+    "opt_national_number": "National Number"
+  },
+  "admin": { "login": "Admin Login", "dashboard": "Admin Dashboard", "logout": "Logout", "loading": "Loading..." },
+  "upload": { "drop_here": "Drop the file here...", "drag_or_click": "Drag & drop a file here, or click to select", "selected": "Selected", "no_preview": "No preview" }
+}
+
+
