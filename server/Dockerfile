@@ -8,7 +8,7 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci --only=production
 
-# Copy source code
+# Copy source codec
 COPY . .
 
 # Create uploads directory

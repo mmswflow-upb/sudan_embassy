@@ -1,23 +1,31 @@
 # Sudan Embassy Website
 
-A modern, multilingual website for the Embassy of the Republic of Sudan in Bucharest, Romania. Built with React (frontend) and Node.js/Express (backend), featuring Firebase integration for authentication, storage, and database.
+Hey! This is our team project for the Embassy of the Republic of Sudan in Bucharest, Romania. We built this from scratch as a modern, multilingual website using React for the frontend and Node.js/Express for the backend, with Firebase handling authentication, storage, and the database.
+
+## 👥 Our Team
+
+- **Sakka Mohamad-Mario** - Frontend, Backend, and Deployment
+- **Zafar Azzam** - Backend Development  
+- **Al-Khalidy Essam** - Frontend Development
 
 ## 🚀 Live Demo
 
 - **Frontend**: [https://sudan-embassy.web.app](https://sudan-embassy.web.app)
 - **Backend API**: [https://sudan-embassy-api-919606479278.europe-west1.run.app](https://sudan-embassy-api-919606479278.europe-west1.run.app)
 
-## ✨ Key Features
+## ✨ What We Built
 
-- **Multilingual Support**: Full internationalization (i18n) in English, Romanian, and Arabic with RTL support
-- **Content Management**: Admin portal for managing consular services, news, alerts, and forms
-- **File Management**: Upload and manage documents, images, and PDFs with Firebase Storage
-- **Appointment Booking**: Public-facing appointment booking system
-- **Form Submissions**: Contact forms and custom form submissions
-- **Responsive Design**: Mobile-first design with Tailwind CSS
-- **Real-time Updates**: Firebase Firestore for real-time data synchronization
-- **Secure Authentication**: Firebase Authentication for admin access
-- **Cloud Deployment**: Frontend on Firebase Hosting, Backend on Google Cloud Run
+We wanted to create something really useful for the embassy, so here's what we included:
+
+- **Multilingual Support**: The whole site works in English, Romanian, and Arabic (with proper RTL support for Arabic!)
+- **Content Management**: We built an admin portal where embassy staff can easily manage services, news, alerts, and forms without touching any code
+- **File Management**: Upload documents, images, and PDFs - everything gets stored securely in Firebase Storage
+- **Appointment Booking**: People can book appointments online instead of having to call
+- **Form Submissions**: Contact forms and custom form submissions that go straight to the embassy
+- **Responsive Design**: Works perfectly on phones, tablets, and desktops - we made sure of that
+- **Real-time Updates**: Using Firebase Firestore, so content updates instantly
+- **Secure Authentication**: Only authorized staff can access the admin panel
+- **Cloud Deployment**: We deployed the frontend on Firebase Hosting and the backend on Google Cloud Run
 
 ## 📁 Project Structure
 
@@ -122,7 +130,9 @@ sudan_embassy/
 - **Google Cloud CLI** (for backend deployment)
 - **Firebase project** with Firestore, Storage, and Authentication enabled
 
-## 📋 Quick Start
+## 📋 Getting Started
+
+Want to run this locally? Here's how we set it up:
 
 ### 1. Clone the Repository
 
@@ -137,15 +147,15 @@ cd sudan_embassy
 cd client
 npm install
 
-# Create environment file
+# Create your environment file
 cp .env.local.example .env.local
 # Edit .env.local with your Firebase project ID and API URL
 
-# Start development server
+# Start the dev server
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:5173`
+You'll see the frontend at `http://localhost:5173`
 
 ### 3. Backend Setup
 
@@ -153,69 +163,69 @@ The frontend will be available at `http://localhost:5173`
 cd server
 npm install
 
-# Create environment file
+# Set up your environment
 cp .env.example .env
 # Edit .env with your Firebase credentials
 
-# Add Firebase service account
-# Download from Firebase Console → Project Settings → Service Accounts
-# Save as server/credentials/firebase-sa-key.json
+# Add Firebase service account key
+# Download it from Firebase Console → Project Settings → Service Accounts
+# Save it as server/credentials/firebase-sa-key.json
 
-# Seed the database (optional)
+# Seed the database with some sample data (optional but helpful)
 npm run seed
 
-# Start server
+# Fire up the server
 npm start
 ```
 
-The API will be available at `http://localhost:3000`
+The API will be running at `http://localhost:3000`
 
-## 🔄 Development Workflow
+## 🔄 How We Organized Everything
 
-### Frontend Development
+### Frontend Development (Essam & Mario)
 
-1. **Component Structure**: Components are organized by feature in `client/src/components/`
-   - `admin/` - Admin-specific components
-   - Shared components (Header, Footer, Hero, etc.)
+1. **Component Structure**: We organized components by feature in `client/src/components/`
+   - `admin/` - Everything for the admin portal
+   - Shared components like Header, Footer, Hero, etc.
 
-2. **Page Routes**: All pages are in `client/src/pages/`
+2. **Page Routes**: All pages live in `client/src/pages/`
    - Public pages (HomePage, NewsPage, ConsularPage, etc.)
-   - Admin pages (Admin, AdminLogin)
+   - Admin pages (Admin dashboard, AdminLogin)
 
 3. **Internationalization**: 
-   - Add translations to `client/src/locales/*.json`
-   - Use `useTranslation()` hook in components
-   - Support for RTL languages (Arabic)
+   - We put all translations in `client/src/locales/*.json` files
+   - Use the `useTranslation()` hook in components
+   - Arabic gets RTL support automatically
 
 4. **API Integration**:
-   - Configure base URL in `client/src/config.js`
-   - All API calls should use `getApiUrl()` helper
-   - Pass `lang` query parameter for i18n content
+   - Set the base URL in `client/src/config.js`
+   - Always use `getApiUrl()` helper for API calls
+   - Don't forget to pass the `lang` query parameter for multilingual content
 
-### Backend Development
+### Backend Development (Azzam & Mario)
 
-1. **API Endpoints**: All routes defined in `server/index.js`
-   - Public endpoints (no auth required)
-   - Admin endpoints (Firebase auth required)
+1. **API Endpoints**: Everything's defined in `server/index.js`
+   - Public endpoints (anyone can access)
+   - Admin endpoints (need Firebase auth)
 
-2. **Data Model**: Firestore collections
-   - `consularServices` - Consular service offerings
+2. **Data Model**: We use these Firestore collections
+   - `consularServices` - All the services the embassy offers
    - `news` - News articles and announcements
-   - `alerts` - System alerts and notifications
+   - `alerts` - Important alerts and notifications
    - `forms` - Downloadable forms
    - `appointments` - Appointment bookings
-   - `submissions` - Form submissions
+   - `submissions` - Form submissions from users
    - `settings` - Site-wide configuration
 
 3. **Internationalization**:
-   - All content has `i18n` field with translations
-   - `resolveI18n()` helper merges language-specific content
+   - Every piece of content has an `i18n` field with translations
+   - The `resolveI18n()` helper merges language-specific content
    - API accepts `lang` query parameter (en, ro, ar)
 
 4. **File Management**:
-   - Uploads handled by Multer
-   - Files stored in Firebase Storage
-   - Automatic cleanup on document deletion
+   - We use Multer to handle uploads
+   - Files get stored in Firebase Storage
+   - When you delete something, we automatically clean up the associated files
 
 ### Database Schema
 
@@ -394,15 +404,17 @@ All admin endpoints require Firebase Authentication token in the `Authorization`
 # 3. Users can then login through /admin-login page
 ```
 
-## 🌍 Internationalization (i18n)
+## 🌍 How We Handled Multiple Languages
 
 ### Supported Languages
 
 - **English (en)** - Default language
-- **Romanian (ro)** - Secondary language
-- **Arabic (ar)** - RTL support enabled
+- **Romanian (ro)** - For Romanian speakers
+- **Arabic (ar)** - With full RTL support
 
 ### Adding Translations
+
+When we add new text, we have to update it in three places:
 
 1. **Frontend translations**: Edit `client/src/locales/*.json`
    ```json
@@ -437,11 +449,11 @@ All admin endpoints require Firebase Authentication token in the `Authorization`
 
 ### Language Switching
 
-Language preference is stored in `localStorage` and applied across the entire application. The language selector is available in the header.
+We save the language preference in `localStorage` so it persists across sessions. The language selector is in the header.
 
-## 🚀 Deployment
+## 🚀 How We Deployed Everything
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+We wrote detailed deployment instructions in [DEPLOYMENT.md](./DEPLOYMENT.md), but here's the quick version:
 
 ### Frontend Deployment (Firebase Hosting)
 
@@ -494,29 +506,29 @@ UPLOAD_DIR="./uploads"
 PORT=3000
 ```
 
-## 🐛 Troubleshooting
+## 🐛 Common Issues We Ran Into
 
 ### Frontend Issues
 
-**Issue**: API calls failing with CORS errors
-- **Solution**: Check that backend URL is correct in `.env.local`
-- Ensure backend has CORS enabled for frontend origin
+**Problem**: API calls fail with CORS errors
+- **Fix**: Double-check the backend URL in `.env.local`
+- Make sure the backend has CORS enabled for your frontend origin
 
-**Issue**: Firebase auth not working
-- **Solution**: Verify Firebase config in `client/src/lib/firebase.js`
-- Check Firebase Console → Authentication is enabled
+**Problem**: Firebase authentication not working
+- **Fix**: Verify the Firebase config in `client/src/lib/firebase.js`
+- Check that Authentication is enabled in Firebase Console
 
 ### Backend Issues
 
-**Issue**: Firebase Admin SDK errors
-- **Solution**: Verify service account key exists at correct path
+**Problem**: Firebase Admin SDK errors
+- **Fix**: Make sure the service account key file exists at the right path
 - Check `GOOGLE_APPLICATION_CREDENTIALS` in `.env`
 
-**Issue**: File uploads failing
-- **Solution**: Ensure `uploads/` directory exists and is writable
-- Check Firebase Storage bucket name is correct
+**Problem**: File uploads failing
+- **Fix**: Make sure the `uploads/` directory exists and is writable
+- Verify the Firebase Storage bucket name is correct
 
-## 📚 Additional Resources
+## 📚 Resources We Found Helpful
 
 - [React Documentation](https://react.dev/)
 - [Vite Documentation](https://vitejs.dev/)
@@ -524,45 +536,6 @@ PORT=3000
 - [Express.js Documentation](https://expressjs.com/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
 - [i18next Documentation](https://www.i18next.com/)
-
-## 📄 License
-
-This project is proprietary software developed for the Embassy of the Republic of Sudan in Bucharest, Romania.
-
-## 👥 Contributors
-
-- Development Team: [mmswflow-upb](https://github.com/mmswflow-upb)
-
-## 📞 Support
-
-For technical support or questions, please contact the development team or refer to the documentation in individual README files:
-- Frontend: [client/README.md](./client/README.md)
-- Backend: [server/README.md](./server/README.md)
-- `POST /api/alerts` - Create alert
-- `POST /api/forms` - Upload form
-- `PUT /api/settings` - Update settings
-
-## 🚀 Deployment
-
-### Frontend Deployment (Firebase Hosting)
-
-```bash
-cd client
-npm run build
-firebase deploy --only hosting
-```
-
-### Backend Deployment (Google Cloud Run)
-
-```bash
-cd server
-gcloud run deploy sudan-embassy-api \
-  --source . \
-  --platform managed \
-  --region europe-west1 \
-  --allow-unauthenticated \
-  --port 8080
-```
 
 ## 🔧 Environment Variables Reference
 
@@ -581,18 +554,23 @@ gcloud run deploy sudan-embassy-api \
 | `FIREBASE_BUCKET`                | Firebase Storage bucket       | `gs://sudan-embassy.firebasestorage.app` |
 | `UPLOAD_DIR`                     | Local upload directory        | `./uploads`                              |
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
 ## 📄 License
 
-This project is proprietary software for the Embassy of the Republic of Sudan.
+This is proprietary software we developed for the Embassy of the Republic of Sudan in Bucharest, Romania.
 
-## 📞 Support
+## 👥 The Team
 
-For technical support or questions, please contact the development team.
+We're a team of students who worked together on this project:
+- **Sakka Mohamad-Mario** - Led frontend and backend development, handled all deployment
+- **Zafar Azzam** - Focused on backend architecture and API development
+- **Al-Khalidy Essam** - Worked on frontend components and user interface
+
+Feel free to check out our work on [GitHub](https://github.com/mmswflow-upb)
+
+## 📞 Questions?
+
+If you need help or have questions about the project, you can:
+- Check out the detailed docs in individual README files:
+  - Frontend: [client/README.md](./client/README.md)
+  - Backend: [server/README.md](./server/README.md)
+- Reach out to any of us on the team

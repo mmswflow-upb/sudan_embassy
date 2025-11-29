@@ -1,23 +1,30 @@
-# Sudan Embassy Backend API
+# Sudan Embassy Backend
 
-Node.js/Express backend API for the Sudan Embassy website. Provides RESTful endpoints for content management, file uploads, multilingual content, and admin functionality with Firebase integration.
+This is the backend API we built for the Sudan Embassy website. It's a Node.js/Express server that handles all the data, file uploads, and admin functionality.
+
+## 👥 Backend Team
+
+- **Zafar Azzam** - API endpoints, database design, file handling
+- **Sakka Mohamad-Mario** - Firebase integration, authentication, deployment
 
 ## 🚀 Live API
 
-- **Production API**: [https://sudan-embassy-api-919606479278.europe-west1.run.app](https://sudan-embassy-api-919606479278.europe-west1.run.app)
+Check it out: [https://sudan-embassy-api-919606479278.europe-west1.run.app](https://sudan-embassy-api-919606479278.europe-west1.run.app)
 
-## ✨ Features
+## ✨ What We Built
 
-- **RESTful API**: Express.js server with organized endpoints
-- **Multilingual Content**: i18n support for English, Romanian, and Arabic
-- **Firebase Integration**: Firestore database and Cloud Storage
-- **File Management**: Multer middleware for file uploads with automatic storage
-- **Authentication**: Firebase Admin SDK for secure admin access
-- **CORS Support**: Configured for cross-origin requests
-- **Session Management**: Cookie-based sessions for admin auth
-- **Automatic Cleanup**: Delete associated files when documents are removed
-- **Settings Management**: Dynamic site configuration
-- **Email Notifications**: Contact form and appointment notifications
+Here's what our backend does:
+
+- **RESTful API**: Clean Express.js endpoints for everything the frontend needs
+- **Three Languages**: Returns content in English, Romanian, or Arabic based on the request
+- **Firebase Integration**: Uses Firestore for the database and Cloud Storage for files
+- **File Uploads**: Handles images and PDFs with Multer, stores them in Firebase automatically
+- **Authentication**: Firebase Admin SDK secures the admin endpoints
+- **CORS Setup**: Properly configured so the frontend can talk to us
+- **Sessions**: Cookie-based sessions for keeping admins logged in
+- **Smart Cleanup**: When you delete something, it cleans up the associated files too
+- **Settings API**: Dynamic configuration so embassy staff can control site behavior
+- **Notifications**: Sends emails for contact forms and appointment requests
 
 ## 🛠️ Tech Stack
 
@@ -49,40 +56,42 @@ server/
 └── package.json                    # Dependencies and scripts
 ```
 
-## 🚦 Prerequisites
+## 🚦 What You Need
 
 - **Node.js** v18.19.0 or higher
-- **npm** or **yarn**
-- **Google Cloud CLI** (for Cloud Run deployment)
-- **Firebase project** with Firestore and Storage enabled
+- **npm** (comes with Node)
+- **Google Cloud CLI** for deploying to Cloud Run
+- A **Firebase project** with Firestore and Storage enabled
 
-## 🔧 Setup Instructions
+## 🔧 Getting Started
 
-### 1. Install Dependencies
+### 1. Install Everything
 
 ```bash
 cd server
 npm install
 ```
 
-### 2. Firebase Project Setup
+### 2. Set Up Firebase
 
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Select or create your project
-3. Enable **Firestore Database** (production mode)
-4. Enable **Cloud Storage**
+1. Head to [Firebase Console](https://console.firebase.google.com/)
+2. Pick your project (or create a new one)
+3. Turn on **Firestore Database** (use production mode)
+4. Turn on **Cloud Storage**
 
-### 3. Firebase Service Account
+### 3. Get Service Account Credentials
+
+This is important - the server needs these credentials to talk to Firebase:
 
 1. In Firebase Console, go to **Project Settings** → **Service Accounts**
 2. Click **Generate New Private Key**
 3. Save the JSON file as `server/credentials/firebase-sa-key.json`
 
-**Important**: Never commit this file to git!
+**Important**: Never commit this file to git! It's already in `.gitignore`.
 
-### 4. Environment Configuration
+### 4. Configure Environment Variables
 
-Create a `.env` file in the `server` directory:
+Create a `.env` file in the `server` folder:
 
 ```env
 GOOGLE_APPLICATION_CREDENTIALS="./credentials/firebase-sa-key.json"
@@ -91,7 +100,9 @@ UPLOAD_DIR="./uploads"
 PORT=3000
 ```
 
-### 5. Create Required Directories
+### 5. Create Folders
+
+Make sure these directories exist:
 
 ```bash
 mkdir -p credentials
@@ -100,25 +111,26 @@ mkdir -p uploads
 
 ### 6. Seed the Database (Optional)
 
-Populate Firestore with sample data:
+Want some test data to work with? Run our seeder:
 
 ```bash
 npm run seed
 ```
 
-This creates:
+This creates sample data:
+
 - 2 consular services with translations
 - 2 news articles with translations
 - 2 alerts with translations
 - Site settings with full i18n support
 
-### 7. Start Development Server
+### 7. Run It
 
 ```bash
 npm start
 ```
 
-The API will be available at `http://localhost:3000`
+The API is now running at `http://localhost:3000`
 
 ## 📝 API Documentation
 
@@ -127,9 +139,10 @@ The API will be available at `http://localhost:3000`
 - **Development**: `http://localhost:3000`
 - **Production**: `https://sudan-embassy-api-919606479278.europe-west1.run.app`
 
-### Query Parameters
+### Language Support
 
-All content endpoints support the `lang` query parameter:
+All content endpoints understand the `lang` query parameter:
+
 - `lang=en` - English (default)
 - `lang=ro` - Romanian
 - `lang=ar` - Arabic
@@ -763,14 +776,16 @@ curl -X POST \
   http://localhost:3000/api/upload
 ```
 
-## 🚀 Deployment
+## 🚀 How We Deploy
 
-### Google Cloud Run Deployment
+We use Google Cloud Run because it scales automatically and we only pay when people use it.
 
-1. **Install Google Cloud CLI**
-2. **Authenticate**: `gcloud auth login`
-3. **Set project**: `gcloud config set project your-project-id`
-4. **Deploy**:
+### Deploy to Cloud Run
+
+1. **Install Google Cloud CLI** (if you haven't already)
+2. **Login**: `gcloud auth login`
+3. **Set your project**: `gcloud config set project your-project-id`
+4. **Deploy it**:
 
 ```bash
 gcloud run deploy sudan-embassy-api \
@@ -784,9 +799,9 @@ gcloud run deploy sudan-embassy-api \
   --max-instances 10
 ```
 
-### Environment Variables in Cloud Run
+### Set Environment Variables
 
-Set these environment variables in the Cloud Run service:
+After deploying, set the environment variables:
 
 ```bash
 gcloud run services update sudan-embassy-api \
@@ -796,61 +811,94 @@ gcloud run services update sudan-embassy-api \
   UPLOAD_DIR="./uploads"
 ```
 
-## 🔍 Monitoring & Logs
+## 🔍 Monitoring
 
-### View Logs
+### Check the Logs
 
 ```bash
 gcloud logs read --service=sudan-embassy-api --limit=50
 ```
 
-### Monitor Performance
+### See How It's Performing
 
 ```bash
 gcloud run services describe sudan-embassy-api --region=europe-west1
 ```
 
-## 🛡️ Security Considerations
+## 🛡️ Security Stuff
 
-1. **CORS**: Configured to allow specific origins
+1. **CORS**: We allow specific origins only
 2. **File Upload**: Validates file types and sizes
-3. **Authentication**: Firebase ID token validation
-4. **Rate Limiting**: Consider implementing rate limiting for production
-5. **HTTPS**: All production traffic is HTTPS
+3. **Authentication**: Firebase ID token validation on admin routes
+4. **Rate Limiting**: Should add this for production (we haven't yet)
+5. **HTTPS**: Cloud Run handles this automatically
 
-## 🐛 Troubleshooting
+## 🐛 Common Problems We Fixed
 
-### Common Issues
+### Firebase credentials not found?
 
-1. **Firebase credentials not found**
+**Fix**:
 
-   - Ensure `firebase-sa-key.json` exists in `credentials/` directory
-   - Check file permissions
+- Make sure `firebase-sa-key.json` exists in `credentials/` folder
+- Check file permissions
 
-2. **Upload directory not writable**
+### Upload directory not writable?
 
-   - Ensure `uploads/` directory exists and is writable
-   - Check directory permissions
+**Fix**:
 
-3. **CORS errors**
+- Make sure `uploads/` directory exists and is writable
+- Check folder permissions
 
-   - Verify frontend URL is in CORS configuration
-   - Check browser console for specific error details
+### CORS errors?
 
-4. **Authentication failures**
-   - Verify Firebase project configuration
-   - Check token expiration
-   - Ensure correct Firebase project ID
+**Fix**:
+
+- Verify frontend URL is in CORS configuration in `index.js`
+- Check browser console for details
+
+### Authentication failures?
+
+**Fix**:
+
+- Verify Firebase project configuration
+- Check if token is expired
+- Make sure you're using the correct Firebase project ID
 
 ### Debug Mode
 
-Enable debug logging by setting:
+If something's really broken, turn on debug logging:
 
 ```bash
 export DEBUG=*
 npm start
 ```
 
-## 📞 Support
+## 📝 Available Commands
 
-For technical support or questions about the backend API, please contact the development team.
+- `npm start` - Start production server
+- `npm run dev` - Start with nodemon (auto-restarts when you change code)
+- `npm run seed` - Seed database with sample data
+
+## 🔐 Security Notes
+
+- **Service Account**: Never commit `firebase-sa-key.json` to git (it's in `.gitignore`)
+- **Environment Variables**: Use `.env` locally, platform secrets in production
+- **Authentication**: All admin endpoints are protected by Firebase Auth
+- **File Upload**: We validate file types and sizes
+- **CORS**: Carefully configured allowed origins
+- **Firestore Rules**: Set proper security rules in Firebase Console
+
+## 📚 Resources That Helped Us
+
+- [Express.js Documentation](https://expressjs.com/)
+- [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup)
+- [Google Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Multer Documentation](https://github.com/expressjs/multer)
+
+## 📄 License
+
+This is proprietary software we developed for the Embassy of the Republic of Sudan in Bucharest, Romania.
+
+## 👥 Questions?
+
+Check out the main [project README](../README.md) or reach out to the team!
