@@ -57,7 +57,7 @@
   "news": { 
     "title": "Latest News & Announcements", 
     "read_more": "Read more", 
-    "back": "← Back to news", 
+    "back": "Back to news", 
     "tag_update": "Update",
     "tags": {
       "Official": "Official",
@@ -368,6 +368,7 @@
     },
     "common": {
       "upload_progress": "Upload: {{progress}}%",
+      "attachment": "Attachment",
       "email": "Email",
       "password": "Password",
       "login": "Login",

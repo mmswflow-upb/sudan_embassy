@@ -57,7 +57,7 @@
   "news": {
     "title": "Ultimele știri și anunțuri",
     "read_more": "Citește mai mult",
-    "back": "← Înapoi la știri",
+    "back": "Înapoi la știri",
     "tag_update": "Actualizare",
     "tags": {
       "Official": "Oficial",
@@ -372,10 +372,11 @@
     },
     "common": {
       "upload_progress": "Încărcare: {{progress}}%",
+      "attachment": "Atașament",
       "email": "Email",
       "password": "Parolă",
       "login": "Autentificare",
-      "login_failed": "Autentificare eșuată. Verificați email/parola și activați Email/Password în Firebase Auth.",
+      "login_failed": "Autentificarea a eșuat. Verificați e-mailul/parola și activați Email/Password în Firebase Auth.",
       "save": "Salvează",
       "cancel": "Anulează",
       "edit": "Editează",

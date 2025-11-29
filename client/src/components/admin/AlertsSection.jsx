@@ -7,6 +7,8 @@ import { toast } from "react-hot-toast";
 import { getApiUrl } from "../../config.js";
 import { Field, TextArea, Button } from "../UI.jsx";
 import { AlertEditForm, LanguageSelector } from "./EditForms.jsx";
+import Upload from "../Upload.jsx";
+import { uploadToStorage } from "../../lib/storage.js";
 
 function withTokenHeaders(init = {}) {
   const token = localStorage.getItem("fbToken") || "";
@@ -47,6 +49,9 @@ function AlertForm() {
     ro: { message: "" },
     ar: { message: "" },
   });
+  const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [active, setActive] = useState(true);
 
   const onSubmit = handleSubmit(async (values) => {
     // Validate all languages
@@ -60,6 +65,25 @@ function AlertForm() {
       return;
     }
 
+    let attachmentUrl = null;
+    let fileName = null;
+    let attachmentType = "file";
+    
+    if (file) {
+      const { downloadURL } = await uploadToStorage(
+        "alerts",
+        file,
+        setProgress
+      );
+      attachmentUrl = downloadURL;
+      fileName = file.name;
+      attachmentType = file.type?.includes("pdf")
+        ? "pdf"
+        : file.type?.startsWith("image/")
+        ? "image"
+        : "file";
+    }
+
     const token = localStorage.getItem("fbToken") || "";
     await fetch(getApiUrl("/api/alerts"), {
       method: "POST",
@@ -67,9 +91,24 @@ function AlertForm() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ ...values, i18n: i18nVals }),
+      body: JSON.stringify({ 
+        ...values, 
+        i18n: i18nVals,
+        active,
+        attachmentUrl,
+        fileName,
+        attachmentType
+      }),
     });
     reset();
+    setFile(null);
+    setProgress(0);
+    setActive(true);
+    setI18nVals({
+      en: { message: "" },
+      ro: { message: "" },
+      ar: { message: "" },
+    });
     toast.success(t('admin.alerts.saved'));
   });
 
@@ -114,6 +153,24 @@ function AlertForm() {
           </Field>
         </div>
       </div>
+      <Field label={t('admin.common.attachment')}>
+        <Upload onFile={setFile} accept="image/*,application/pdf" />
+        {progress > 0 && (
+          <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
+        )}
+      </Field>
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="alert-active"
+          checked={active}
+          onChange={(e) => setActive(e.target.checked)}
+          className="w-4 h-4"
+        />
+        <label htmlFor="alert-active" className="text-sm">
+          {t('admin.alerts.active')}
+        </label>
+      </div>
       <Button disabled={isSubmitting}>
         {isSubmitting ? t('admin.alerts.creating') : t('admin.alerts.create')}
       </Button>
@@ -146,15 +203,16 @@ function AlertsList() {
   
   async function saveEdit() {
     const token = localStorage.getItem("fbToken") || "";
-    await fetch(getApiUrl(`/api/alerts/${editData.id}`), {
+    const dataToSave = editData; // Capture current state
+    await fetch(getApiUrl(`/api/alerts/${dataToSave.id}`), {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(editData),
+      body: JSON.stringify(dataToSave),
     });
-    setItems(items.map(i => (i.id || i.createdAt) === editData.id ? editData : i));
+    setItems(items.map(i => (i.id || i.createdAt) === dataToSave.id ? dataToSave : i));
     setEditingId(null);
     setEditData(null);
     toast.success(t('admin.alerts.updated'));
@@ -176,6 +234,7 @@ function AlertsList() {
           const itemId = item.id || item.createdAt;
           const isEditing = editingId !== null && editingId === itemId && editData !== null;
           const displayMessage = item.i18n?.[viewLang]?.message || item.message;
+          const isActive = item.active !== false;
           
           return (
             <div
@@ -192,7 +251,12 @@ function AlertsList() {
                 />
               ) : (
                 <>
-                  <div>{displayMessage}</div>
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                      {isActive ? 'Active' : 'Inactive'}
+                    </span>
+                    <div>{displayMessage}</div>
+                  </div>
                   <div className="flex items-center gap-2">
                     <button
                       className="text-blue-600 hover:text-blue-800"

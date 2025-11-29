@@ -1,7 +1,51 @@
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
+import Upload from "../Upload.jsx";
+import { uploadToStorage } from "../../lib/storage.js";
 
 export function ConsularEditForm({ item, viewLang, onSave, onCancel, onChange }) {
   const { t } = useTranslation();
+  const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [pendingSave, setPendingSave] = useState(false);
+
+  useEffect(() => {
+    if (pendingSave && !uploading) {
+      setPendingSave(false);
+      onSave();
+    }
+  }, [item, pendingSave, uploading, onSave]);
+
+  const handleSave = async () => {
+    if (file && !uploading) {
+      setUploading(true);
+      try {
+        const { downloadURL } = await uploadToStorage("consular", file, setProgress);
+        const attachmentType = file.type?.includes("pdf")
+          ? "pdf"
+          : file.type?.startsWith("image/")
+          ? "image"
+          : "file";
+        const updatedItem = {
+          ...item,
+          attachmentUrl: downloadURL,
+          fileName: file.name,
+          attachmentType
+        };
+        onChange(updatedItem);
+        setFile(null);
+        setProgress(0);
+        setUploading(false);
+        setPendingSave(true);
+      } catch (err) {
+        setUploading(false);
+        throw err;
+      }
+    } else {
+      onSave();
+    }
+  };
 
   return (
     <div className="flex-1 space-y-2">
@@ -42,16 +86,41 @@ export function ConsularEditForm({ item, viewLang, onSave, onCancel, onChange })
         value={item?.icon || ''}
         onChange={(e) => onChange({ ...item, icon: e.target.value })}
       />
+      <div className="text-xs text-gray-600">
+        {item?.attachmentUrl ? (
+          <div className="flex items-center gap-2">
+            {item.attachmentType === 'image' && (
+              <img src={item.attachmentUrl} alt="Current" className="h-12 w-12 object-cover rounded" />
+            )}
+            <span>Current: {item.fileName || 'File attached'}</span>
+            <button
+              type="button"
+              className="text-red-600 hover:text-red-800"
+              onClick={() => onChange({ ...item, attachmentUrl: null, fileName: null, attachmentType: null })}
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <span>No attachment</span>
+        )}
+      </div>
+      <Upload onFile={setFile} accept="image/*,application/pdf" />
+      {progress > 0 && (
+        <div className="text-xs text-gray-600">{t('admin.common.upload_progress', { progress })}</div>
+      )}
       <div className="flex gap-2">
         <button
-          className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
-          onClick={onSave}
+          className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:bg-gray-400"
+          onClick={handleSave}
+          disabled={uploading}
         >
-          {t('admin.common.save')}
+          {uploading ? 'Uploading...' : t('admin.common.save')}
         </button>
         <button
           className="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
           onClick={onCancel}
+          disabled={uploading}
         >
           {t('admin.common.cancel')}
         </button>
@@ -62,6 +131,40 @@ export function ConsularEditForm({ item, viewLang, onSave, onCancel, onChange })
 
 export function NewsEditForm({ item, viewLang, onSave, onCancel, onChange }) {
   const { t } = useTranslation();
+  const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [pendingSave, setPendingSave] = useState(false);
+
+  useEffect(() => {
+    if (pendingSave && !uploading) {
+      setPendingSave(false);
+      onSave();
+    }
+  }, [item, pendingSave, uploading, onSave]);
+
+  const handleSave = async () => {
+    if (file && !uploading) {
+      setUploading(true);
+      try {
+        const { downloadURL } = await uploadToStorage("news", file, setProgress);
+        const updatedItem = {
+          ...item,
+          image: downloadURL
+        };
+        onChange(updatedItem);
+        setFile(null);
+        setProgress(0);
+        setUploading(false);
+        setPendingSave(true);
+      } catch (err) {
+        setUploading(false);
+        throw err;
+      }
+    } else {
+      onSave();
+    }
+  };
 
   return (
     <div className="flex-1 space-y-2">
@@ -116,16 +219,38 @@ export function NewsEditForm({ item, viewLang, onSave, onCancel, onChange }) {
         <option value="Consular">Consular</option>
         <option value="Event">Event</option>
       </select>
+      <div className="text-xs text-gray-600">
+        {item?.image ? (
+          <div className="flex items-center gap-2">
+            <img src={item.image} alt="Current" className="h-12 w-12 object-cover rounded" />
+            <button
+              type="button"
+              className="text-red-600 hover:text-red-800"
+              onClick={() => onChange({ ...item, image: null })}
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <span>No image</span>
+        )}
+      </div>
+      <Upload onFile={setFile} accept="image/*" />
+      {progress > 0 && (
+        <div className="text-xs text-gray-600">{t('admin.common.upload_progress', { progress })}</div>
+      )}
       <div className="flex gap-2">
         <button
-          className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
-          onClick={onSave}
+          className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:bg-gray-400"
+          onClick={handleSave}
+          disabled={uploading}
         >
-          {t('admin.common.save')}
+          {uploading ? 'Uploading...' : t('admin.common.save')}
         </button>
         <button
           className="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
           onClick={onCancel}
+          disabled={uploading}
         >
           {t('admin.common.cancel')}
         </button>
@@ -136,6 +261,47 @@ export function NewsEditForm({ item, viewLang, onSave, onCancel, onChange }) {
 
 export function AlertEditForm({ item, viewLang, onSave, onCancel, onChange }) {
   const { t } = useTranslation();
+  const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [pendingSave, setPendingSave] = useState(false);
+
+  useEffect(() => {
+    if (pendingSave && !uploading) {
+      setPendingSave(false);
+      onSave();
+    }
+  }, [item, pendingSave, uploading, onSave]);
+
+  const handleSave = async () => {
+    if (file && !uploading) {
+      setUploading(true);
+      try {
+        const { downloadURL } = await uploadToStorage("alerts", file, setProgress);
+        const attachmentType = file.type?.includes("pdf")
+          ? "pdf"
+          : file.type?.startsWith("image/")
+          ? "image"
+          : "file";
+        const updatedItem = {
+          ...item,
+          attachmentUrl: downloadURL,
+          fileName: file.name,
+          attachmentType
+        };
+        onChange(updatedItem);
+        setFile(null);
+        setProgress(0);
+        setUploading(false);
+        setPendingSave(true);
+      } catch (err) {
+        setUploading(false);
+        throw err;
+      }
+    } else {
+      onSave();
+    }
+  };
 
   return (
     <div className="flex-1 space-y-2">
@@ -154,16 +320,50 @@ export function AlertEditForm({ item, viewLang, onSave, onCancel, onChange }) {
           }
         })}
       />
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id={`alert-active-${item.id}`}
+          checked={item?.active !== false}
+          onChange={(e) => onChange({ ...item, active: e.target.checked })}
+          className="w-4 h-4"
+        />
+        <label htmlFor={`alert-active-${item.id}`} className="text-sm">
+          {t('admin.alerts.active')}
+        </label>
+      </div>
+      <div className="text-xs text-gray-600">
+        {item?.attachmentUrl ? (
+          <div className="flex items-center gap-2">
+            <span>Current: {item.fileName || 'File attached'}</span>
+            <button
+              type="button"
+              className="text-red-600 hover:text-red-800"
+              onClick={() => onChange({ ...item, attachmentUrl: null, fileName: null, attachmentType: null })}
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <span>No attachment</span>
+        )}
+      </div>
+      <Upload onFile={setFile} accept="image/*,application/pdf" />
+      {progress > 0 && (
+        <div className="text-xs text-gray-600">{t('admin.common.upload_progress', { progress })}</div>
+      )}
       <div className="flex gap-2">
         <button
-          className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
-          onClick={onSave}
+          className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:bg-gray-400"
+          onClick={handleSave}
+          disabled={uploading}
         >
-          {t('admin.common.save')}
+          {uploading ? 'Uploading...' : t('admin.common.save')}
         </button>
         <button
           className="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
           onClick={onCancel}
+          disabled={uploading}
         >
           {t('admin.common.cancel')}
         </button>
@@ -174,6 +374,40 @@ export function AlertEditForm({ item, viewLang, onSave, onCancel, onChange }) {
 
 export function FormEditForm({ item, viewLang, onSave, onCancel, onChange }) {
   const { t } = useTranslation();
+  const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [pendingSave, setPendingSave] = useState(false);
+
+  useEffect(() => {
+    if (pendingSave && !uploading) {
+      setPendingSave(false);
+      onSave();
+    }
+  }, [item, pendingSave, uploading, onSave]);
+
+  const handleSave = async () => {
+    if (file && !uploading) {
+      setUploading(true);
+      try {
+        const { downloadURL } = await uploadToStorage("forms", file, setProgress);
+        const updatedItem = {
+          ...item,
+          fileUrl: downloadURL
+        };
+        onChange(updatedItem);
+        setFile(null);
+        setProgress(0);
+        setUploading(false);
+        setPendingSave(true);
+      } catch (err) {
+        setUploading(false);
+        throw err;
+      }
+    } else {
+      onSave();
+    }
+  };
 
   return (
     <div className="flex-1 space-y-2">
@@ -191,16 +425,39 @@ export function FormEditForm({ item, viewLang, onSave, onCancel, onChange }) {
           }
         })}
       />
+      <div className="text-xs text-gray-600">
+        {item?.fileUrl ? (
+          <div className="flex items-center gap-2">
+            <span>Current file attached</span>
+            <a 
+              href={item.fileUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800"
+            >
+              View
+            </a>
+          </div>
+        ) : (
+          <span>No file</span>
+        )}
+      </div>
+      <Upload onFile={setFile} accept="application/pdf" />
+      {progress > 0 && (
+        <div className="text-xs text-gray-600">{t('admin.common.upload_progress', { progress })}</div>
+      )}
       <div className="flex gap-2">
         <button
-          className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
-          onClick={onSave}
+          className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:bg-gray-400"
+          onClick={handleSave}
+          disabled={uploading}
         >
-          {t('admin.common.save')}
+          {uploading ? 'Uploading...' : t('admin.common.save')}
         </button>
         <button
           className="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
           onClick={onCancel}
+          disabled={uploading}
         >
           {t('admin.common.cancel')}
         </button>
