@@ -32,21 +32,21 @@ export default function ContactPage() {
             href="https://www.google.com/maps/place/Ambasada+Republicii+Sudan/@44.447707,26.1031946,17.77z/data=!4m6!3m5!1s0x40b1ff8fd7ba51a9:0x1bea18766dc4de4c!8m2!3d44.4467127!4d26.1035968!16s%2Fg%2F11vbypp9cb?entry=ttu"
             target="_blank"
             rel="noreferrer"
-            className="flex items-start text-sudan-blue hover:underline"
+            className="bg-sudan-red hover:bg-red-700 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
-            <i className="fa-solid fa-location-dot w-6 text-sudan-green mt-1" />
-            <span className="ms-3 leading-relaxed">{contact.address}</span>
+            <i className="fa-solid fa-location-dot" />
+            <span>{contact.address}</span>
           </a>
           <a
             href={`tel:${contact.phone}`}
             className="bg-sudan-green hover:bg-green-700 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
             <i className="fa-solid fa-phone" />
-            <span>{contact.phone}</span>
+            <span dir="ltr">{contact.phone}</span>
           </a>
           <a
             href={`mailto:${contact.email}`}
-            className="bg-sudan-blue hover:bg-blue-700 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            className="bg-sudan-black hover:bg-gray-800 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
             <i className="fa-solid fa-envelope" />
             <span>{contact.email}</span>

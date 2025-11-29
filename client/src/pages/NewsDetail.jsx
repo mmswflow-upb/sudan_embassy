@@ -4,14 +4,14 @@ import { useTranslation } from "react-i18next";
 import { getApiUrl } from "../config.js";
 
 export default function NewsDetail() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams();
   const [item, setItem] = useState(null);
   useEffect(() => {
-    fetch(getApiUrl(`/api/news/${id}`))
+    fetch(getApiUrl(`/api/news/${id}?lang=${i18n.language}`))
       .then((r) => r.json())
       .then(setItem);
-  }, [id]);
+  }, [id, i18n.language]);
   if (!item)
     return (
       <main className="container mx-auto px-4 py-10">

@@ -58,5 +58,61 @@
       "href": "https://www.sudanpolice.net/",
       "image": "/images/2ss.jpg"
     }
-  ]
+  ],
+  "i18n": {
+    "en": {
+      "hero": {
+        "title": "",
+        "subtitle": "",
+        "cta1": "",
+        "cta2": ""
+      },
+      "statusBar": {
+        "status": "",
+        "holiday": "",
+        "nextAppointment": ""
+      },
+      "emergency": {
+        "note": ""
+      },
+      "contacts": [],
+      "promoSlides": []
+    },
+    "ro": {
+      "hero": {
+        "title": "",
+        "subtitle": "",
+        "cta1": "",
+        "cta2": ""
+      },
+      "statusBar": {
+        "status": "",
+        "holiday": "",
+        "nextAppointment": ""
+      },
+      "emergency": {
+        "note": ""
+      },
+      "contacts": [],
+      "promoSlides": []
+    },
+    "ar": {
+      "hero": {
+        "title": "",
+        "subtitle": "",
+        "cta1": "",
+        "cta2": ""
+      },
+      "statusBar": {
+        "status": "",
+        "holiday": "",
+        "nextAppointment": ""
+      },
+      "emergency": {
+        "note": ""
+      },
+      "contacts": [],
+      "promoSlides": []
+    }
+  }
 }

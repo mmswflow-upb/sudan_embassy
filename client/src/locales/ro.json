@@ -1,16 +1,18 @@
 {
   "common": {
-    "language": { "en": "Engleză", "ro": "Română", "ar": "العربية" },
-    "learn_more": "Află mai mult",
-    "view_all": "Vezi tot",
-    "get_directions": "Obține indicații",
+    "language": { "en": "English", "ro": "Romanian", "ar": "العربية" },
+    "learn_more": "Află mai multe",
+    "view_all": "Vezi Toate",
+    "get_directions": "Obține Direcții",
     "send": "Trimite",
     "submit": "Trimite",
     "submitting": "Se trimite...",
     "download": "Descarcă",
     "no_results": "Niciun rezultat.",
     "loading": "Se încarcă...",
-    "submitted_success": "Trimis cu succes"
+    "submitted_success": "Trimis cu succes",
+    "select": "Selectează",
+    "our_location": "Locația Noastră"
   },
   "promo": {
     "meroe_title": "Comori ascunse – Turism cultural",
@@ -25,9 +27,9 @@
     "appointments": "Programări",
     "news": "Știri și alerte",
     "about": "Despre Sudan",
-    "overview": "Prezentare generală",
-    "about_brief": "Pe scurt despre Sudan",
-    "about_travel": "Metode de călătorie",
+    "overview": "Prezentare Generală",
+    "about_brief": "Pe Scurt Despre Sudan",
+    "about_travel": "Metode de Călătorie",
     "about_culture": "Cultură",
     "about_tourism": "Turism",
     "about_visiting": "Vizitarea Sudanului",
@@ -56,7 +58,15 @@
     "title": "Ultimele știri și anunțuri",
     "read_more": "Citește mai mult",
     "back": "← Înapoi la știri",
-    "tag_update": "Actualizare"
+    "tag_update": "Actualizare",
+    "tags": {
+      "Official": "Oficial",
+      "Announcement": "Anunț",
+      "Event": "Eveniment",
+      "Update": "Actualizare",
+      "Holiday": "Sărbătoare",
+      "Important": "Important"
+    }
   },
   "forms": {
     "title": "Formulare și descărcări",
@@ -120,9 +130,47 @@
     ],
     "brief_p2": "Sistemul metric este standardul legal în Sudan; măsurile tradiționale sunt uneori folosite local.",
     "travel_title": "Metode de călătorie către Sudan",
+    "travel_p1": "Avioane, autobuze, trenuri, nave și multiple treceri terestre conectează Sudanul cu țările vecine. Lungimea frontierei terestre este de aproximativ 6.780 km cu Egipt, Libia, Ciad, Republica Centrafricană, Sudanul de Sud, Etiopia și Eritreea.",
+    "travel_routes_title": "Principale rute terestre și puncte de trecere",
+    "travel_routes": [
+      "Sudan–Egipt: Punct vamal Halayib; drum spre Suez prin Shalateen și Abu Ramad.",
+      "Sudan–Libia: Frontiera Jebel Oweinat; trasee spre Dongola și Kutum.",
+      "Sudan–Ciad: El Geneina (SD) – Adré (TD) trecerea principală.",
+      "Sudan–Africa Centrală: Punct de control Um Dafoug (Darfur).",
+      "Sudan–Eritreea: Punct de control Kassala – Teseney; alte intrări nordice."
+    ],
+    "travel_within_title": "Călătorii în interiorul Sudanului",
+    "travel_within_p1": "Toate mijloacele de transport sunt disponibile. Călătoriile terestre sunt comune datorită unei rețele rutiere în expansiune și liniilor feroviare vechi.",
+    "travel_air_title": "Călătorii aeriene",
+    "travel_air_p1": "Sudan Airways și Badr Airlines conectează marile orașe; operatori străini operează rute către Khartoum. Călătorii din România se conectează de obicei prin hub-uri regionale.",
+    "travel_marine_title": "Transport maritim și fluvial",
+    "travel_marine_p1": "Legături maritime deservesc țările vecine de pe Marea Roșie. Transportul fluvial completează rutele terestre în unele zone.",
+    "travel_rail_title": "Căi ferate",
+    "travel_rail_p1": "Linii istorice (Khartoum–Atbara–Port Sudan; Nyala–Khartoum; Wadi Halfa–Atbara–Khartoum) deservesc pasageri și mărfuri. Călătoriile durează ~24–30 ore în funcție de rută.",
+    "travel_motor_title": "Autostrăzi",
+    "travel_motor_p1": "Coridoarele cheie includ Khartoum–Atbara, Khartoum–Damazin, Khartoum–El Obeid, Khartoum–Kadugli, Khartoum–Port Sudan și Nyala–Kass–Zalingei. Traseele sezoniere pot fi impracticabile în timpul sezonului ploios (iun–sep).",
     "culture_title": "Cultura Sudanului",
+    "culture_family_title": "Familia sudaneză",
+    "culture_family_p1": "Comunitățile sunt formate tradițional în jurul familiilor extinse și linie, cu vârstnici respectați care ghidează viața socială. Legăturile de familie influențează oportunitățile, căsătoria și conducerea locală. Urbanizarea îmbină obiceiurile tradiționale cu viața modernă în Khartoum, Omdurman și alte orașe.",
+    "culture_family_p2": "Adunările sociale respectă adesea segregarea de gen în mediile tradiționale. În orașe, familiile lucrează și studiază alături de grupuri etnice diverse. Gospodăriile cu venituri mari din marile orașe sunt strâns legate de serviciile publice, afaceri și profesii.",
     "tourism_title": "Turism în Sudan",
-    "visiting_title": "Vizitarea Sudanului"
+    "tourism_places_title": "Locuri de vizitat",
+    "tourism_places": [
+      "Muzeul Național al Sudanului (Khartoum) — artefacte de la Epoca de Piatră până în epocile medievale.",
+      "Muzeul de Etnografie (Khartoum) — culturi, obiceiuri și triburi ale Sudanului.",
+      "Muzeul Casei Al‑Khalifa (Omdurman) — istoria perioadei mahdiste lângă Mormântul Al‑Mahdi.",
+      "Muzeul Sheikan (El Obeid) — relicve mahdiste și istorie regională.",
+      "Muzeul Palatului Sultanului Ali Dinar (Al‑Fashir) — patrimoniul Darfur."
+    ],
+    "tourism_cultural_title": "Experiențe culturale",
+    "tourism_cultural_p1": "Dervișii Rotitori din Sudan sunt renumiți pentru dansurile devotionale ritmice. Centrele culturale și bibliotecile din Khartoum găzduiesc expoziții, programe de limbi și forumuri (de ex., Centrul Cultural Abdel Karim Merghani, Goethe‑Institut, Institutul Francez, British Council).",
+    "visiting_title": "Vizitarea Sudanului",
+    "visiting_intl_title": "Sudanul în arena internațională",
+    "visiting_intl_p1": "Cu o moștenire duală africană-arabă și o locație strategică, Sudanul joacă un rol activ în organizațiile regionale și internaționale, inclusiv ONU, UA, Liga Arabă, OCI, COMESA, IGAD și altele. Sudanul pledează pentru neamestec, beneficiu mutual și o ordine internațională bazată pe reguli care promovează justiția și dezvoltarea.",
+    "visiting_bilateral_title": "Relații bilaterale",
+    "visiting_bilateral_p1": "Sudanul menține relații diplomatice în întreaga lume, inclusiv relații puternice cu țări din Africa, Orientul Mijlociu, Europa și Asia. Pentru călătorii români în București, Ambasada Republicii Sudan oferă servicii consulare, vize și îndrumări de călătorie pertinente pentru Sudan.",
+    "visiting_challenges_title": "Provocări și diplomație",
+    "visiting_challenges_p1": "Sudanul continuă să abordeze provocările interne în timp ce urmărește stabilitatea și angajamentul constructiv în străinătate prin ambasadele și consulatele sale."
   },
   "pages": {
     "consular_services": "Servicii consulare",
@@ -151,6 +199,13 @@
     "dashboard": "Panou de administrare",
     "logout": "Deconectare",
     "loading": "Se încarcă...",
+    "common": {
+      "edit": "Editează",
+      "delete": "Șterge",
+      "save": "Salvează",
+      "cancel": "Anulează",
+      "confirm_delete": "Sigur doriți să ștergeți acest element?"
+    },
     "tabs": {
       "content_management": "Gestionare Conținut",
       "user_data": "Date Utilizatori",
@@ -173,6 +228,8 @@
       "save": "Salvează",
       "saving": "Se salvează...",
       "saved": "Serviciu salvat",
+      "updated": "Serviciu actualizat",
+      "deleted": "Serviciu șters",
       "delete": "Șterge",
       "no_services": "Niciun serviciu încă."
     },
@@ -186,6 +243,8 @@
       "publish": "Publică",
       "publishing": "Se publică...",
       "published": "Știre publicată",
+      "updated": "Știre actualizată",
+      "deleted": "Știre ștearsă",
       "delete": "Șterge",
       "no_news": "Nicio știre încă."
     },
@@ -197,7 +256,10 @@
       "active": "Activ",
       "attachment": "Atașament (opțional – imagine sau PDF)",
       "create": "Creează alertă",
+      "creating": "Se creează...",
       "created": "Alertă creată",
+      "updated": "Alertă actualizată",
+      "deleted": "Alertă ștearsă",
       "delete": "Șterge",
       "no_alerts": "Nicio alertă încă."
     },
@@ -207,8 +269,12 @@
       "form_title": "Titlu",
       "description": "Descriere",
       "pdf": "PDF",
+      "file": "Fișier",
+      "file_required": "Vă rugăm să selectați un fișier pentru încărcare",
       "save": "Salvează",
       "uploaded": "Formular încărcat",
+      "updated": "Formular actualizat",
+      "deleted": "Formular șters",
       "select_pdf": "Selectați un fișier PDF",
       "download": "Descarcă",
       "delete": "Șterge",
@@ -236,7 +302,8 @@
       "no_submissions": "Nicio depunere încă."
     },
     "settings": {
-      "title": "Setări site",
+      "title": "Setări Site",
+      "site_settings": "Setări Site",
       "header_section": "Antet",
       "phone": "Telefon",
       "email": "Email",
@@ -265,6 +332,9 @@
       "longitude": "Longitudine",
       "place_link": "Link locație",
       "promo_section": "Slide-uri promoționale",
+      "promo_slides": "Slide-uri Promo",
+      "slide1": "Slide 1",
+      "slide2": "Slide 2",
       "promo_title": "Titlu",
       "promo_cta": "CTA",
       "promo_subtitle": "Subtitlu",
@@ -275,20 +345,28 @@
       "saved_settings": "Setări salvate"
     },
     "i18n": {
+      "english": "Engleză",
       "romanian": "Română",
       "arabic": "Arabă",
+      "name_en": "Nume (en)",
       "name_ro": "Nume (ro)",
       "name_ar": "Nume (ar)",
+      "details_en": "Detalii (en)",
       "details_ro": "Detalii (ro)",
       "details_ar": "Detalii (ar)",
+      "title_en": "Titlu (en)",
       "title_ro": "Titlu (ro)",
       "title_ar": "Titlu (ar)",
+      "summary_en": "Rezumat (en)",
       "summary_ro": "Rezumat (ro)",
       "summary_ar": "Rezumat (ar)",
+      "tag_en": "Etichetă (en)",
       "tag_ro": "Etichetă (ro)",
       "tag_ar": "Etichetă (ar)",
+      "message_en": "Mesaj (en)",
       "message_ro": "Mesaj (ro)",
       "message_ar": "Mesaj (ar)",
+      "description_en": "Descriere (en)",
       "description_ro": "Descriere (ro)",
       "description_ar": "Descriere (ar)"
     },
@@ -296,8 +374,13 @@
       "upload_progress": "Încărcare: {{progress}}%",
       "email": "Email",
       "password": "Parolă",
-      "login": "Autentifică-te",
-      "login_failed": "Autentificare eșuată. Verificați email-ul/parola și activați Email/Parolă în Firebase Auth."
+      "login": "Autentificare",
+      "login_failed": "Autentificare eșuată. Verificați email/parola și activați Email/Password în Firebase Auth.",
+      "save": "Salvează",
+      "cancel": "Anulează",
+      "edit": "Editează",
+      "delete": "Șterge",
+      "confirm_delete": "Sigur doriți să ștergeți acest element?"
     }
   },
   "upload": {

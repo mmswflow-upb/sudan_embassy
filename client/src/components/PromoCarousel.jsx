@@ -1,20 +1,49 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { getApiUrl } from "../config.js";
 
 export default function PromoCarousel() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [active, setActive] = useState(0);
+  const [slides, setSlides] = useState([]);
 
-  // Get slides from locale translations
-  const slides = t("settings.promoSlides", { returnObjects: true });
+  // Fetch settings from API
+  useEffect(() => {
+    fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && data.promoSlides) {
+          // Convert object to array and merge with i18n translations
+          const slidesArray = Object.entries(data.promoSlides).map(([key, slide]) => {
+            const i18nSlide = data.i18n?.[i18n.language]?.promoSlides?.[key] || {};
+            return {
+              ...slide,
+              title: i18nSlide.title || slide.title,
+              subtitle: i18nSlide.subtitle || slide.subtitle,
+              cta: i18nSlide.cta || slide.cta
+            };
+          });
+          setSlides(slidesArray);
+        }
+      })
+      .catch(() => {
+        // Fallback to locale translations if API fails
+        const fallbackSlides = t("settings.promoSlides", { returnObjects: true });
+        setSlides(Array.isArray(fallbackSlides) ? fallbackSlides : []);
+      });
+  }, [i18n.language, t]);
 
   useEffect(() => {
+    if (slides.length === 0) return;
     const id = setInterval(
       () => setActive((a) => (a + 1) % slides.length),
       7000
     );
     return () => clearInterval(id);
   }, [slides.length]);
+  
+  if (slides.length === 0) return null;
+  
   return (
     <section className="my-6">
       <div

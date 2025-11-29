@@ -7,14 +7,6 @@ export default function ConsularDetail() {
   const { t, i18n } = useTranslation();
   const { id } = useParams();
   const [item, setItem] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [file, setFile] = useState(null);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    notes: "",
-  });
   useEffect(() => {
     const lang = i18n.resolvedLanguage;
     fetch(
@@ -73,122 +65,6 @@ export default function ConsularDetail() {
           </a>
         )}
         <p className="text-gray-700 whitespace-pre-line mb-6">{item.details}</p>
-
-        <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
-          <h2 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">
-            {t("forms.submit_filled")}
-          </h2>
-          <p className="text-sm md:text-base text-gray-600 mb-3 md:mb-4">{t("forms.submit_help")}</p>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setSubmitting(true);
-              try {
-                const fd = new FormData();
-                fd.append("type", "consular");
-                fd.append("relatedId", id);
-                fd.append("name", form.name);
-                fd.append("email", form.email);
-                fd.append("phone", form.phone);
-                fd.append("notes", form.notes);
-                if (file) fd.append("file", file);
-                const res = await fetch(getApiUrl("/api/submissions"), {
-                  method: "POST",
-                  body: fd,
-                });
-                const data = await res.json().catch(() => ({}));
-                if (!res.ok) throw new Error(data.error || "Failed to submit");
-                setForm({ name: "", email: "", phone: "", notes: "" });
-                setFile(null);
-                window.dispatchEvent(
-                  new CustomEvent("toast", {
-                    detail: { type: "success", text: "Submitted successfully" },
-                  })
-                );
-              } catch (err) {
-                window.dispatchEvent(
-                  new CustomEvent("toast", {
-                    detail: { type: "error", text: err.message },
-                  })
-                );
-              } finally {
-                setSubmitting(false);
-              }
-            }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-          >
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("forms.full_name")}
-              </label>
-              <input
-                required
-                className="w-full border rounded px-3 py-2"
-                value={form.name}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, name: e.target.value }))
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("forms.email")}
-              </label>
-              <input
-                type="email"
-                required
-                className="w-full border rounded px-3 py-2"
-                value={form.email}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, email: e.target.value }))
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("forms.phone")}
-              </label>
-              <input
-                required
-                className="w-full border rounded px-3 py-2"
-                value={form.phone}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, phone: e.target.value }))
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t("forms.notes")}
-              </label>
-              <input
-                className="w-full border rounded px-3 py-2"
-                value={form.notes}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, notes: e.target.value }))
-                }
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">
-                {t("forms.upload_filled")}
-              </label>
-              <input
-                type="file"
-                accept="application/pdf,image/*"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-              />
-            </div>
-            <div className="md:col-span-2 flex justify-end">
-              <button
-                disabled={submitting}
-                className="bg-sudan-green text-white px-6 py-2 rounded"
-              >
-                {submitting ? t("common.submitting") : t("common.submit")}
-              </button>
-            </div>
-          </form>
-        </div>
       </div>
     </main>
   );

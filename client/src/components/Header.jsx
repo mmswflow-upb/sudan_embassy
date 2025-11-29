@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { getApiUrl } from "../config.js";
 
 export default function Header() {
   const { t, i18n } = useTranslation();
@@ -10,9 +11,21 @@ export default function Header() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const aboutRef = useRef(null);
   const mobileMenuRef = useRef(null);
+  const [contact, setContact] = useState(null);
 
-  // Get contact info from locale translations
-  const contact = t("settings.header", { returnObjects: true });
+  // Fetch contact info from API
+  useEffect(() => {
+    fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
+      .then((r) => r.json())
+      .then((s) => {
+        if (s?.header) {
+          setContact(s.header);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch header settings:', err);
+      });
+  }, [i18n.language]);
   
   // Check if current page is an About page
   const isAboutPage = location.pathname.startsWith("/about");
@@ -41,12 +54,10 @@ export default function Header() {
     }
   }, [open]);
   
-  // Handle scroll - set scrolled state and close menus
+  // Handle scroll - set scrolled state
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 8);
-      setOpen(false);
-      setAboutOpen(false);
     };
     window.addEventListener("scroll", onScroll);
     onScroll();
@@ -63,22 +74,26 @@ export default function Header() {
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-1 md:gap-2 py-2 px-3 md:px-4 border-b border-white/20 text-[11px] md:text-sm">
           <div className="flex items-center gap-3 md:gap-4 flex-wrap">
-            <a
-              href={`tel:${contact.phone}`}
-              className="flex items-center hover:text-gray-200"
-            >
-              <i className="fa-solid fa-phone w-4" />
-              <span className="ms-2">{contact.phone}</span>
-            </a>
-            <a
-              href={`mailto:${contact.email}`}
-              className="flex items-center hover:text-gray-200"
-            >
-              <i className="fa-solid fa-envelope w-4" />
-              <span className="ms-2 truncate max-w-[180px] md:max-w-none">
-                {contact.email}
-              </span>
-            </a>
+            {contact && (
+              <>
+                <a
+                  href={`tel:${contact.phone}`}
+                  className="flex items-center hover:text-gray-200"
+                >
+                  <i className="fa-solid fa-phone w-4" />
+                  <span className="ms-2" dir="ltr">{contact.phone}</span>
+                </a>
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="flex items-center hover:text-gray-200"
+                >
+                  <i className="fa-solid fa-envelope w-4" />
+                  <span className="ms-2 truncate max-w-[180px] md:max-w-none">
+                    {contact.email}
+                  </span>
+                </a>
+              </>
+            )}
           </div>
           <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto justify-between md:justify-end">
             <div className="flex items-center gap-1.5 md:gap-2">
@@ -157,9 +172,12 @@ export default function Header() {
                 <NavLink
                   to="/consular-services"
                   onClick={() => setAboutOpen(false)}
-                  className={({ isActive }) => `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
-                    isActive ? "bg-white/20 text-white" : "hover:bg-white/10"
-                  }`}
+                  className={({ isActive }) => {
+                    const isConsularPage = location.pathname.startsWith('/consular');
+                    return `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
+                      isActive || isConsularPage ? "bg-white/20 text-white" : "hover:bg-white/10"
+                    }`;
+                  }}
                 >
                   {t("nav.consular")}
                 </NavLink>
@@ -179,9 +197,12 @@ export default function Header() {
                 <NavLink
                   to="/news"
                   onClick={() => setAboutOpen(false)}
-                  className={({ isActive }) => `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
-                    isActive ? "bg-white/20 text-white" : "hover:bg-white/10"
-                  }`}
+                  className={({ isActive }) => {
+                    const isNewsPage = location.pathname.startsWith('/news');
+                    return `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
+                      isActive || isNewsPage ? "bg-white/20 text-white" : "hover:bg-white/10"
+                    }`;
+                  }}
                 >
                   {t("nav.news")}
                 </NavLink>
@@ -278,9 +299,13 @@ export default function Header() {
               {t("nav.book_appointment")}
             </Link>
             <button
-              className="md:hidden"
-              onClick={() => setOpen((v) => !v)}
+              className="md:hidden p-2 -mr-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen((v) => !v);
+              }}
               aria-label="Toggle menu"
+              type="button"
             >
               <i className="fa-solid fa-bars text-white text-xl" />
             </button>
@@ -293,7 +318,7 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/"
-                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                  className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                 >
                   {t("nav.home")}
                 </NavLink>
@@ -302,7 +327,12 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/consular-services"
-                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                  className={({ isActive }) => {
+                    const isConsularPage = location.pathname.startsWith('/consular');
+                    return `block py-2 px-3 rounded-md transition-colors ${
+                      isActive || isConsularPage ? "bg-white/20 text-white font-medium" : ""
+                    }`;
+                  }}
                 >
                   {t("nav.consular")}
                 </NavLink>
@@ -311,7 +341,7 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/appointments"
-                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                  className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                 >
                   {t("nav.appointments")}
                 </NavLink>
@@ -320,7 +350,12 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/news"
-                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                  className={({ isActive }) => {
+                    const isNewsPage = location.pathname.startsWith('/news');
+                    return `block py-2 px-3 rounded-md transition-colors ${
+                      isActive || isNewsPage ? "bg-white/20 text-white font-medium" : ""
+                    }`;
+                  }}
                 >
                   {t("nav.news")}
                 </NavLink>
@@ -335,7 +370,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about-sudan"
-                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                        className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                       >
                         {t("nav.overview")}
                       </NavLink>
@@ -344,7 +379,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/in-brief"
-                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                        className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                       >
                         {t("nav.about_brief")}
                       </NavLink>
@@ -353,7 +388,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/travel"
-                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                        className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                       >
                         {t("nav.about_travel")}
                       </NavLink>
@@ -362,7 +397,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/culture"
-                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                        className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                       >
                         {t("nav.about_culture")}
                       </NavLink>
@@ -371,7 +406,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/tourism"
-                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                        className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                       >
                         {t("nav.about_tourism")}
                       </NavLink>
@@ -380,7 +415,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/visiting"
-                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                        className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                       >
                         {t("nav.about_visiting")}
                       </NavLink>
@@ -392,7 +427,7 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/contact"
-                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
+                  className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                 >
                   {t("nav.contact")}
                 </NavLink>

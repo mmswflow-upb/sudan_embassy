@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
+import { getApiUrl } from "../config.js";
 
 function StatusCard({ color, icon, title, subtitle }) {
   return (
@@ -15,26 +17,44 @@ function StatusCard({ color, icon, title, subtitle }) {
 }
 
 export default function StatusBar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [statusBar, setStatusBar] = useState(null);
+
+  useEffect(() => {
+    fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
+      .then((r) => r.json())
+      .then((s) => {
+        console.log('StatusBar received settings:', s);
+        if (s?.statusBar) {
+          console.log('StatusBar data:', s.statusBar);
+          setStatusBar(s.statusBar);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch settings:', err);
+      });
+  }, [i18n.language]);
+
+  if (!statusBar) return null;
 
   const cards = [
     {
       color: "bg-sudan-green",
       icon: "fa-solid fa-clock",
       title: t("status.embassy_status"),
-      subtitle: t("settings.statusBar.status")
+      subtitle: statusBar.status
     },
     {
       color: "bg-sudan-blue",
       icon: "fa-solid fa-bell",
       title: t("status.holiday_notice"),
-      subtitle: t("settings.statusBar.holiday")
+      subtitle: statusBar.holiday
     },
     {
       color: "bg-sudan-black",
       icon: "fa-solid fa-calendar-alt",
       title: t("status.next_available"),
-      subtitle: t("settings.statusBar.nextAppointment")
+      subtitle: statusBar.nextAppointment
     },
   ];
 

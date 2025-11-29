@@ -5,7 +5,18 @@ export default function Footer() {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => {
+    // Exact match for home
+    if (path === '/') return location.pathname === '/';
+    
+    // Special case for consular-services: also match /consular/* routes
+    if (path === '/consular-services' && location.pathname.startsWith('/consular')) {
+      return true;
+    }
+    
+    // For other paths, check if current path starts with the link path
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
 
   const mainLinks = [
     { path: "/", label: t("nav.home") },

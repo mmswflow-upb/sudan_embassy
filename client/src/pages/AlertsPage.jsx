@@ -13,7 +13,7 @@ export default function AlertsPage() {
   return (
     <main className="container mx-auto px-4 py-6">
       <h1 className="text-3xl font-bold text-sudan-black mb-4">
-        {t("pages.alerts")}
+        {t("nav.news")}
       </h1>
       <div className="space-y-4">
         {items.map((a) => (

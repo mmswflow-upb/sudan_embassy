@@ -43,6 +43,23 @@ app.use(express.json());
 // Multer memory storage for file uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Helper function to delete file from storage
+async function deleteFileFromStorage(fileUrl) {
+  if (!fileUrl || !bucket?.name) return;
+  try {
+    // Extract file path from URL
+    const urlPattern = new RegExp(`https://storage\\.googleapis\\.com/${bucket.name}/(.+)`);
+    const match = fileUrl.match(urlPattern);
+    if (match && match[1]) {
+      const filePath = decodeURIComponent(match[1]);
+      await bucket.file(filePath).delete();
+      console.log(`Deleted file: ${filePath}`);
+    }
+  } catch (error) {
+    console.error(`Error deleting file from storage: ${error.message}`);
+  }
+}
+
 app.get("/", (req, res) => {
   res.json({ message: "API up" });
 });
@@ -262,7 +279,10 @@ app.get("/api/consular-services", async (req, res) => {
     .orderBy("createdAt", "desc")
     .get();
   res.json(
-    snap.docs.map((d) => resolveI18n(d.data(), lang, ["name", "details"]))
+    snap.docs.map((d) => {
+      const data = resolveI18n(d.data(), lang, ["name", "details"]);
+      return { ...data, id: d.id };
+    })
   );
 });
 
@@ -270,7 +290,7 @@ app.get("/api/consular-services/:id", async (req, res) => {
   const lang = (req.query.lang || "").trim();
   const doc = await db.collection("consularServices").doc(req.params.id).get();
   if (!doc.exists) return res.status(404).json({ error: "Not found" });
-  res.json(resolveI18n(doc.data(), lang, ["name", "details"]));
+  res.json({ id: doc.id, ...resolveI18n(doc.data(), lang, ["name", "details"]) });
 });
 
 app.put("/api/consular-services/:id", requireAnyAuth, async (req, res) => {
@@ -283,8 +303,19 @@ app.put("/api/consular-services/:id", requireAnyAuth, async (req, res) => {
 });
 
 app.delete("/api/consular-services/:id", requireAnyAuth, async (req, res) => {
-  await db.collection("consularServices").doc(req.params.id).delete();
-  res.json({ ok: true });
+  try {
+    const doc = await db.collection("consularServices").doc(req.params.id).get();
+    if (doc.exists) {
+      const data = doc.data();
+      // Delete associated files
+      if (data.attachmentUrl) await deleteFileFromStorage(data.attachmentUrl);
+      if (data.image) await deleteFileFromStorage(data.image);
+    }
+    await db.collection("consularServices").doc(req.params.id).delete();
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Appointments
@@ -355,9 +386,10 @@ app.get("/api/news", async (req, res) => {
   const lang = (req.query.lang || "").trim();
   const snap = await db.collection("news").orderBy("createdAt", "desc").get();
   res.json(
-    snap.docs.map((d) =>
-      resolveI18n(d.data(), lang, ["title", "summary", "tag"])
-    )
+    snap.docs.map((d) => {
+      const data = resolveI18n(d.data(), lang, ["title", "summary", "tag"]);
+      return { ...data, id: d.id };
+    })
   );
 });
 
@@ -365,7 +397,7 @@ app.get("/api/news/:id", async (req, res) => {
   const lang = (req.query.lang || "").trim();
   const doc = await db.collection("news").doc(req.params.id).get();
   if (!doc.exists) return res.status(404).json({ error: "Not found" });
-  res.json(resolveI18n(doc.data(), lang, ["title", "summary", "tag"]));
+  res.json({ id: doc.id, ...resolveI18n(doc.data(), lang, ["title", "summary", "tag"]) });
 });
 
 app.put("/api/news/:id", requireAnyAuth, async (req, res) => {
@@ -378,8 +410,19 @@ app.put("/api/news/:id", requireAnyAuth, async (req, res) => {
 });
 
 app.delete("/api/news/:id", requireAnyAuth, async (req, res) => {
-  await db.collection("news").doc(req.params.id).delete();
-  res.json({ ok: true });
+  try {
+    const doc = await db.collection("news").doc(req.params.id).get();
+    if (doc.exists) {
+      const data = doc.data();
+      // Delete associated files
+      if (data.attachmentUrl) await deleteFileFromStorage(data.attachmentUrl);
+      if (data.image) await deleteFileFromStorage(data.image);
+    }
+    await db.collection("news").doc(req.params.id).delete();
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Reorder endpoints
@@ -457,8 +500,78 @@ async function writeSettings(data) {
 }
 
 app.get("/api/settings", async (req, res) => {
+  const lang = (req.query.lang || "").trim();
   const settings = await readSettings();
-  res.json(settings);
+  
+  // If no language specified or no i18n data, return as-is
+  if (!lang || !settings.i18n || !settings.i18n[lang]) {
+    return res.json(settings);
+  }
+  
+  // Resolve i18n translations for hero, statusBar, emergency, contacts, promoSlides
+  const translated = { ...settings };
+  const i18nData = settings.i18n[lang];
+  
+  // Hero translations
+  if (i18nData.hero) {
+    translated.hero = { ...settings.hero };
+    if (i18nData.hero.title) translated.hero.title = i18nData.hero.title;
+    if (i18nData.hero.subtitle) translated.hero.subtitle = i18nData.hero.subtitle;
+    if (i18nData.hero.cta1) translated.hero.cta1 = i18nData.hero.cta1;
+    if (i18nData.hero.cta2) translated.hero.cta2 = i18nData.hero.cta2;
+  }
+  
+  // StatusBar translations
+  if (i18nData.statusBar) {
+    translated.statusBar = { ...settings.statusBar };
+    if (i18nData.statusBar.status) translated.statusBar.status = i18nData.statusBar.status;
+    if (i18nData.statusBar.holiday) translated.statusBar.holiday = i18nData.statusBar.holiday;
+    if (i18nData.statusBar.nextAppointment) translated.statusBar.nextAppointment = i18nData.statusBar.nextAppointment;
+  }
+  
+  // Emergency note translation
+  if (i18nData.emergency && i18nData.emergency.note) {
+    translated.emergency = { ...settings.emergency, note: i18nData.emergency.note };
+  }
+  
+  // Hours translations
+  if (i18nData.hours) {
+    translated.hours = { ...settings.hours };
+    if (i18nData.hours.monThu) translated.hours.monThu = i18nData.hours.monThu;
+    if (i18nData.hours.fri) translated.hours.fri = i18nData.hours.fri;
+  }
+  
+  // Contact text translations (object structure)
+  if (i18nData.contacts && typeof i18nData.contacts === 'object') {
+    translated.contacts = { ...settings.contacts };
+    for (const key in settings.contacts) {
+      if (i18nData.contacts[key]) {
+        // Keep the icon, replace the text
+        translated.contacts[key] = [settings.contacts[key][0], i18nData.contacts[key]];
+      }
+    }
+  }
+  
+  // Promo slides translations (handle object structure)
+  if (i18nData.promoSlides && typeof i18nData.promoSlides === 'object') {
+    translated.promoSlides = {};
+    for (const key in settings.promoSlides) {
+      const slide = settings.promoSlides[key];
+      const i18nSlide = i18nData.promoSlides[key];
+      if (i18nSlide) {
+        translated.promoSlides[key] = {
+          ...slide,
+          title: i18nSlide.title || slide.title,
+          subtitle: i18nSlide.subtitle || slide.subtitle,
+          cta: i18nSlide.cta || slide.cta,
+        };
+      } else {
+        translated.promoSlides[key] = slide;
+      }
+    }
+  }
+  
+  res.json(translated);
 });
 
 app.put("/api/settings", requireAnyAuth, async (req, res) => {
@@ -548,7 +661,10 @@ app.get("/api/alerts", async (req, res) => {
   const lang = (req.query.lang || "").trim();
   const snap = await db.collection("alerts").orderBy("createdAt", "desc").get();
   res.json(
-    snap.docs.map((d) => resolveI18n(d.data(), lang, ["message", "level"]))
+    snap.docs.map((d) => {
+      const data = resolveI18n(d.data(), lang, ["message", "level"]);
+      return { ...data, id: d.id };
+    })
   );
 });
 
@@ -561,9 +677,28 @@ app.patch("/api/alerts/:id", requireAnyAuth, async (req, res) => {
   res.json({ ok: true });
 });
 
-app.delete("/api/alerts/:id", requireAnyAuth, async (req, res) => {
-  await db.collection("alerts").doc(req.params.id).delete();
+app.put("/api/alerts/:id", requireAnyAuth, async (req, res) => {
+  const id = req.params.id;
+  await db
+    .collection("alerts")
+    .doc(id)
+    .set({ ...req.body, id }, { merge: true });
   res.json({ ok: true });
+});
+
+app.delete("/api/alerts/:id", requireAnyAuth, async (req, res) => {
+  try {
+    const doc = await db.collection("alerts").doc(req.params.id).get();
+    if (doc.exists) {
+      const data = doc.data();
+      // Delete associated file
+      if (data.attachmentUrl) await deleteFileFromStorage(data.attachmentUrl);
+    }
+    await db.collection("alerts").doc(req.params.id).delete();
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Forms & Downloads
@@ -596,7 +731,10 @@ app.get("/api/forms", async (req, res) => {
   const lang = (req.query.lang || "").trim();
   const snap = await db.collection("forms").orderBy("createdAt", "desc").get();
   res.json(
-    snap.docs.map((d) => resolveI18n(d.data(), lang, ["title", "description"]))
+    snap.docs.map((d) => {
+      const data = resolveI18n(d.data(), lang, ["title", "description"]);
+      return { ...data, id: d.id };
+    })
   );
 });
 
@@ -604,12 +742,31 @@ app.get("/api/forms/:id", async (req, res) => {
   const lang = (req.query.lang || "").trim();
   const doc = await db.collection("forms").doc(req.params.id).get();
   if (!doc.exists) return res.status(404).json({ error: "Not found" });
-  res.json(resolveI18n(doc.data(), lang, ["title", "description"]));
+  res.json({ id: doc.id, ...resolveI18n(doc.data(), lang, ["title", "description"]) });
+});
+
+app.put("/api/forms/:id", requireAnyAuth, async (req, res) => {
+  const id = req.params.id;
+  await db
+    .collection("forms")
+    .doc(id)
+    .set({ ...req.body, id }, { merge: true });
+  res.json({ ok: true });
 });
 
 app.delete("/api/forms/:id", requireAnyAuth, async (req, res) => {
-  await db.collection("forms").doc(req.params.id).delete();
-  res.json({ ok: true });
+  try {
+    const doc = await db.collection("forms").doc(req.params.id).get();
+    if (doc.exists) {
+      const data = doc.data();
+      // Delete associated file
+      if (data.fileUrl) await deleteFileFromStorage(data.fileUrl);
+    }
+    await db.collection("forms").doc(req.params.id).delete();
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(PORT, () => {

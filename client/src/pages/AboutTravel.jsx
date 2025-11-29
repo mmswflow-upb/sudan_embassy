@@ -6,25 +6,23 @@ export default function AboutTravel(){
     <main className="container mx-auto px-4 py-6 md:py-10">
       <h1 className="text-2xl md:text-3xl font-bold text-sudan-black mb-4 md:mb-6">{t('about.travel_title')}</h1>
       <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 space-y-3 md:space-y-4 leading-relaxed text-sm md:text-base text-gray-700">
-        <p>Airplanes, buses, trains, ships, and multiple land crossings connect Sudan with its neighbors. Land frontier length is approximately 6,780 km across Egypt, Libya, Chad, Central African Republic, South Sudan, Ethiopia, and Eritrea.</p>
-        <h2 className="text-lg md:text-xl font-semibold">Main land routes and checkpoints</h2>
+        <p>{t('about.travel_p1')}</p>
+        <h2 className="text-lg md:text-xl font-semibold">{t('about.travel_routes_title')}</h2>
         <ul className="list-disc pl-5 space-y-1 text-sm md:text-base">
-          <li>Sudan–Egypt: Halayib customs checkpoint; road to Suez via Shalateen and Abu Ramad.</li>
-          <li>Sudan–Libya: Jebel Oweinat border; tracks to Dongola and Kutum.</li>
-          <li>Sudan–Chad: El Geneina (SD) – Adré (TD) main crossing.</li>
-          <li>Sudan–Central Africa: Um Dafoug (Darfur) checkpoint.</li>
-          <li>Sudan–Eritrea: Kassala – Teseney checkpoint; other northern entries.</li>
+          {t('about.travel_routes', { returnObjects: true }).map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
         </ul>
-        <h2 className="text-lg md:text-xl font-semibold">Travel within Sudan</h2>
-        <p>All means of transport are available. Overland travel is common due to an expanding road network and legacy rail lines.</p>
-        <h3 className="text-base md:text-lg font-semibold">Air travel</h3>
-        <p>Sudan Airways and Badr Airlines connect major cities; foreign carriers operate routes to Khartoum. Travelers from Romania typically connect via regional hubs.</p>
-        <h3 className="text-base md:text-lg font-semibold">Marine & river transport</h3>
-        <p>Sea links serve nearby countries on the Red Sea. River transport complements overland routes in some areas.</p>
-        <h3 className="text-base md:text-lg font-semibold">Railways</h3>
-        <p>Historic lines (Khartoum–Atbara–Port Sudan; Nyala–Khartoum; Wadi Halfa–Atbara–Khartoum) support passenger and freight. Trips range ~24–30 hours depending on route.</p>
-        <h3 className="text-base md:text-lg font-semibold">Motorways</h3>
-        <p>Key corridors include Khartoum–Atbara, Khartoum–Damazin, Khartoum–El Obeid, Khartoum–Kadugli, Khartoum–Port Sudan, and Nyala–Kass–Zalingei. Seasonal tracks can be impassable during the rainy season (Jun–Sep).</p>
+        <h2 className="text-lg md:text-xl font-semibold">{t('about.travel_within_title')}</h2>
+        <p>{t('about.travel_within_p1')}</p>
+        <h3 className="text-base md:text-lg font-semibold">{t('about.travel_air_title')}</h3>
+        <p>{t('about.travel_air_p1')}</p>
+        <h3 className="text-base md:text-lg font-semibold">{t('about.travel_marine_title')}</h3>
+        <p>{t('about.travel_marine_p1')}</p>
+        <h3 className="text-base md:text-lg font-semibold">{t('about.travel_rail_title')}</h3>
+        <p>{t('about.travel_rail_p1')}</p>
+        <h3 className="text-base md:text-lg font-semibold">{t('about.travel_motor_title')}</h3>
+        <p>{t('about.travel_motor_p1')}</p>
       </div>
     </main>
   )

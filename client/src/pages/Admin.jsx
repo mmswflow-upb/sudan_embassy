@@ -19,6 +19,13 @@ import { useTranslation } from "react-i18next";
 
 import { getApiUrl } from "../config.js";
 
+// Import section components
+import ConsularSection from "../components/admin/ConsularSection.jsx";
+import NewsSection from "../components/admin/NewsSection.jsx";
+import AlertsSection from "../components/admin/AlertsSection.jsx";
+import FormsSection from "../components/admin/FormsSection.jsx";
+import SettingsSection from "../components/admin/SettingsSection.jsx";
+
 async function api(path, options = {}) {
   const res = await fetch(getApiUrl(path), {
     credentials: "include",
@@ -86,12 +93,25 @@ function ConsularForm() {
   });
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [selectedLang, setSelectedLang] = useState("en");
   const [i18nVals, setI18nVals] = useState({
+    en: { name: "", details: "" },
     ro: { name: "", details: "" },
     ar: { name: "", details: "" },
   });
 
   const onSubmit = handleSubmit(async (values) => {
+    // Validate all languages are filled
+    const missingLangs = [];
+    if (!i18nVals.en.name || !i18nVals.en.details) missingLangs.push('English');
+    if (!i18nVals.ro.name || !i18nVals.ro.details) missingLangs.push('Romanian');
+    if (!i18nVals.ar.name || !i18nVals.ar.details) missingLangs.push('Arabic');
+    
+    if (missingLangs.length > 0) {
+      toast.error(`Please fill all fields for: ${missingLangs.join(', ')}`);
+      return;
+    }
+
     let image = null;
     let attachmentUrl = null,
       attachmentType = null,
@@ -134,24 +154,10 @@ function ConsularForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <Field label={t('admin.consular.name')}>
-        <TextInput {...register("name")} />
-        {errors.name && (
-          <div className="text-red-600 text-xs mt-1">{errors.name.message}</div>
-        )}
-      </Field>
       <Field label={t('admin.consular.icon')}>
         <TextInput {...register("icon")} />
         {errors.icon && (
           <div className="text-red-600 text-xs mt-1">{errors.icon.message}</div>
-        )}
-      </Field>
-      <Field label={t('admin.consular.details')}>
-        <TextArea rows={4} {...register("details")} />
-        {errors.details && (
-          <div className="text-red-600 text-xs mt-1">
-            {errors.details.message}
-          </div>
         )}
       </Field>
       <Field label={t('admin.consular.attachment')}>
@@ -160,54 +166,50 @@ function ConsularForm() {
           <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
         )}
       </Field>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">{t('admin.i18n.romanian')}</div>
-          <Field label={t('admin.i18n.name_ro')}>
-            <TextInput
-              value={i18nVals.ro.name}
-              onChange={(e) =>
-                setI18nVals((s) => ({
-                  ...s,
-                  ro: { ...s.ro, name: e.target.value },
-                }))
-              }
-            />
-          </Field>
-          <Field label={t('admin.i18n.details_ro')}>
-            <TextArea
-              rows={3}
-              value={i18nVals.ro.details}
-              onChange={(e) =>
-                setI18nVals((s) => ({
-                  ...s,
-                  ro: { ...s.ro, details: e.target.value },
-                }))
-              }
-            />
-          </Field>
+      <div className="border-t pt-4 mt-4">
+        <div className="flex gap-2 mb-3">
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('en')}
+          >
+            {t('admin.i18n.english')}
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'ro' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('ro')}
+          >
+            {t('admin.i18n.romanian')}
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'ar' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('ar')}
+          >
+            {t('admin.i18n.arabic')}
+          </button>
         </div>
-        <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">{t('admin.i18n.arabic')}</div>
-          <Field label={t('admin.i18n.name_ar')}>
+        <div className="bg-gray-50 p-4 rounded">
+          <Field label={t(`admin.i18n.name_${selectedLang}`)}>
             <TextInput
-              value={i18nVals.ar.name}
+              value={i18nVals[selectedLang].name}
               onChange={(e) =>
                 setI18nVals((s) => ({
                   ...s,
-                  ar: { ...s.ar, name: e.target.value },
+                  [selectedLang]: { ...s[selectedLang], name: e.target.value },
                 }))
               }
             />
           </Field>
-          <Field label={t('admin.i18n.details_ar')}>
+          <Field label={t(`admin.i18n.details_${selectedLang}`)}>
             <TextArea
-              rows={3}
-              value={i18nVals.ar.details}
+              rows={4}
+              value={i18nVals[selectedLang].details}
               onChange={(e) =>
                 setI18nVals((s) => ({
                   ...s,
-                  ar: { ...s.ar, details: e.target.value },
+                  [selectedLang]: { ...s[selectedLang], details: e.target.value },
                 }))
               }
             />
@@ -221,7 +223,7 @@ function ConsularForm() {
   );
 }
 
-function withTokenHeaders(init = {}) {
+export function withTokenHeaders(init = {}) {
   const token = localStorage.getItem("fbToken") || "";
   return {
     ...init,
@@ -232,7 +234,8 @@ function withTokenHeaders(init = {}) {
 function useAdminList(path) {
   const [items, setItems] = useState([]);
   useEffect(() => {
-    fetch(getApiUrl(path), withTokenHeaders())
+    const url = path.includes('?') ? `${path}&lang=en` : `${path}?lang=en`;
+    fetch(getApiUrl(url), withTokenHeaders())
       .then((r) => r.json())
       .then(setItems);
   }, []);
@@ -257,11 +260,24 @@ function NewsForm() {
   });
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [selectedLang, setSelectedLang] = useState("en");
   const [i18nVals, setI18nVals] = useState({
+    en: { title: "", summary: "", tag: "" },
     ro: { title: "", summary: "", tag: "" },
     ar: { title: "", summary: "", tag: "" },
   });
   const onSubmit = handleSubmit(async (values) => {
+    // Validate all languages are filled
+    const missingLangs = [];
+    if (!i18nVals.en.title || !i18nVals.en.summary || !i18nVals.en.tag) missingLangs.push('English');
+    if (!i18nVals.ro.title || !i18nVals.ro.summary || !i18nVals.ro.tag) missingLangs.push('Romanian');
+    if (!i18nVals.ar.title || !i18nVals.ar.summary || !i18nVals.ar.tag) missingLangs.push('Arabic');
+    
+    if (missingLangs.length > 0) {
+      toast.error(`Please fill all fields for: ${missingLangs.join(', ')}`);
+      return;
+    }
+
     let image = null;
     let attachmentUrl = null,
       attachmentType = null,
@@ -299,107 +315,79 @@ function NewsForm() {
   });
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <Field label={t('admin.news.news_title')}>
-        <TextInput {...register("title")} />
-        {errors.title && (
-          <div className="text-red-600 text-xs mt-1">
-            {errors.title.message}
-          </div>
-        )}
-      </Field>
-      <Field label={t('admin.news.summary')}>
-        <TextArea rows={3} {...register("summary")} />
-        {errors.summary && (
-          <div className="text-red-600 text-xs mt-1">
-            {errors.summary.message}
-          </div>
-        )}
-      </Field>
-      <Field label={t('admin.news.tag')}>
-        <TextInput {...register("tag")} />
-        {errors.tag && (
-          <div className="text-red-600 text-xs mt-1">{errors.tag.message}</div>
-        )}
-      </Field>
       <Field label={t('admin.news.attachment')}>
         <Upload onFile={setFile} accept="image/*,application/pdf" />
         {progress > 0 && (
           <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
         )}
       </Field>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">{t('admin.i18n.romanian')}</div>
-          <Field label={t('admin.i18n.title_ro')}>
-            <TextInput
-              value={i18nVals.ro.title}
-              onChange={(e) =>
-                setI18nVals((s) => ({
-                  ...s,
-                  ro: { ...s.ro, title: e.target.value },
-                }))
-              }
-            />
-          </Field>
-          <Field label={t('admin.i18n.summary_ro')}>
-            <TextArea
-              rows={3}
-              value={i18nVals.ro.summary}
-              onChange={(e) =>
-                setI18nVals((s) => ({
-                  ...s,
-                  ro: { ...s.ro, summary: e.target.value },
-                }))
-              }
-            />
-          </Field>
-          <Field label={t('admin.i18n.tag_ro')}>
-            <TextInput
-              value={i18nVals.ro.tag}
-              onChange={(e) =>
-                setI18nVals((s) => ({
-                  ...s,
-                  ro: { ...s.ro, tag: e.target.value },
-                }))
-              }
-            />
-          </Field>
+      <div className="border-t pt-4 mt-4">
+        <div className="flex gap-2 mb-3">
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('en')}
+          >
+            {t('admin.i18n.english')}
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'ro' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('ro')}
+          >
+            {t('admin.i18n.romanian')}
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'ar' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('ar')}
+          >
+            {t('admin.i18n.arabic')}
+          </button>
         </div>
-        <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">{t('admin.i18n.arabic')}</div>
-          <Field label={t('admin.i18n.title_ar')}>
+        <div className="bg-gray-50 p-4 rounded">
+          <Field label={t(`admin.i18n.title_${selectedLang}`)}>
             <TextInput
-              value={i18nVals.ar.title}
+              value={i18nVals[selectedLang].title}
               onChange={(e) =>
                 setI18nVals((s) => ({
                   ...s,
-                  ar: { ...s.ar, title: e.target.value },
+                  [selectedLang]: { ...s[selectedLang], title: e.target.value },
                 }))
               }
             />
           </Field>
-          <Field label={t('admin.i18n.summary_ar')}>
+          <Field label={t(`admin.i18n.summary_${selectedLang}`)}>
             <TextArea
               rows={3}
-              value={i18nVals.ar.summary}
+              value={i18nVals[selectedLang].summary}
               onChange={(e) =>
                 setI18nVals((s) => ({
                   ...s,
-                  ar: { ...s.ar, summary: e.target.value },
+                  [selectedLang]: { ...s[selectedLang], summary: e.target.value },
                 }))
               }
             />
           </Field>
-          <Field label={t('admin.i18n.tag_ar')}>
-            <TextInput
-              value={i18nVals.ar.tag}
+          <Field label={t(`admin.i18n.tag_${selectedLang}`)}>
+            <select
+              value={i18nVals[selectedLang].tag}
               onChange={(e) =>
                 setI18nVals((s) => ({
                   ...s,
-                  ar: { ...s.ar, tag: e.target.value },
+                  [selectedLang]: { ...s[selectedLang], tag: e.target.value },
                 }))
               }
-            />
+              className="w-full border rounded px-3 py-2 bg-white"
+            >
+              <option value="">-- {t('common.select')} --</option>
+              <option value="Official">{t('news.tags.Official')}</option>
+              <option value="Announcement">{t('news.tags.Announcement')}</option>
+              <option value="Event">{t('news.tags.Event')}</option>
+              <option value="Update">{t('news.tags.Update')}</option>
+              <option value="Holiday">{t('news.tags.Holiday')}</option>
+              <option value="Important">{t('news.tags.Important')}</option>
+            </select>
           </Field>
         </div>
       </div>
@@ -415,18 +403,31 @@ function NewsForm() {
 
 function AlertsForm() {
   const { t } = useTranslation();
-  const [message, setMessage] = useState("");
   const [level, setLevel] = useState("info");
   const [active, setActive] = useState(true);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [selectedLang, setSelectedLang] = useState("en");
   const [i18nVals, setI18nVals] = useState({
+    en: { message: "" },
     ro: { message: "" },
     ar: { message: "" },
   });
 
   async function submit(e) {
     e.preventDefault();
+    
+    // Validate all languages are filled
+    const missingLangs = [];
+    if (!i18nVals.en.message) missingLangs.push('English');
+    if (!i18nVals.ro.message) missingLangs.push('Romanian');
+    if (!i18nVals.ar.message) missingLangs.push('Arabic');
+    
+    if (missingLangs.length > 0) {
+      toast.error(`Please fill message for: ${missingLangs.join(', ')}`);
+      return;
+    }
+
     let attachmentUrl = null,
       attachmentType = null,
       fileName = null;
@@ -452,7 +453,7 @@ function AlertsForm() {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        message,
+        message: i18nVals.en.message, // Use English as default
         level,
         active,
         attachmentUrl,
@@ -461,7 +462,11 @@ function AlertsForm() {
         i18n: i18nVals,
       }),
     });
-    setMessage("");
+    setI18nVals({
+      en: { message: "" },
+      ro: { message: "" },
+      ar: { message: "" },
+    });
     setLevel("info");
     setActive(true);
     setFile(null);
@@ -470,14 +475,6 @@ function AlertsForm() {
   }
   return (
     <form onSubmit={submit} className="space-y-3">
-      <div>
-        <label className="block text-sm font-medium mb-1">{t('admin.alerts.message')}</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block text-sm font-medium mb-1">{t('admin.alerts.level')}</label>
@@ -506,26 +503,37 @@ function AlertsForm() {
           <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
         )}
       </Field>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">{t('admin.i18n.romanian')}</div>
-          <label className="block text-sm font-medium mb-1">{t('admin.i18n.message_ro')}</label>
-          <input
-            className="w-full border rounded px-3 py-2"
-            value={i18nVals.ro.message}
-            onChange={(e) =>
-              setI18nVals((s) => ({ ...s, ro: { message: e.target.value } }))
-            }
-          />
+      <div className="border-t pt-4 mt-4">
+        <div className="flex gap-2 mb-3">
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('en')}
+          >
+            {t('admin.i18n.english')}
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'ro' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('ro')}
+          >
+            {t('admin.i18n.romanian')}
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'ar' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('ar')}
+          >
+            {t('admin.i18n.arabic')}
+          </button>
         </div>
-        <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">{t('admin.i18n.arabic')}</div>
-          <label className="block text-sm font-medium mb-1">{t('admin.i18n.message_ar')}</label>
+        <div className="bg-gray-50 p-4 rounded">
+          <label className="block text-sm font-medium mb-1">{t(`admin.i18n.message_${selectedLang}`)}</label>
           <input
             className="w-full border rounded px-3 py-2"
-            value={i18nVals.ar.message}
+            value={i18nVals[selectedLang].message}
             onChange={(e) =>
-              setI18nVals((s) => ({ ...s, ar: { message: e.target.value } }))
+              setI18nVals((s) => ({ ...s, [selectedLang]: { message: e.target.value } }))
             }
           />
         </div>
@@ -673,17 +681,29 @@ function AlertsList() {
 
 function FormsCreate() {
   const { t } = useTranslation();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [selectedLang, setSelectedLang] = useState("en");
   const [i18nVals, setI18nVals] = useState({
+    en: { title: "", description: "" },
     ro: { title: "", description: "" },
     ar: { title: "", description: "" },
   });
   async function submit(e) {
     e.preventDefault();
     if (!file) return toast.error(t('admin.forms.select_pdf'));
+    
+    // Validate all languages are filled
+    const missingLangs = [];
+    if (!i18nVals.en.title || !i18nVals.en.description) missingLangs.push('English');
+    if (!i18nVals.ro.title || !i18nVals.ro.description) missingLangs.push('Romanian');
+    if (!i18nVals.ar.title || !i18nVals.ar.description) missingLangs.push('Arabic');
+    
+    if (missingLangs.length > 0) {
+      toast.error(`Please fill all fields for: ${missingLangs.join(', ')}`);
+      return;
+    }
+
     const { downloadURL } = await uploadToStorage("forms", file, setProgress);
     const token = localStorage.getItem("fbToken") || "";
     await fetch(getApiUrl("/api/forms"), {
@@ -693,86 +713,75 @@ function FormsCreate() {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        title,
-        description,
+        title: i18nVals.en.title, // Use English as default
+        description: i18nVals.en.description,
         fileUrl: downloadURL,
         fileType: file.type,
         fileName: file.name,
         i18n: i18nVals,
       }),
     });
-    setTitle("");
-    setDescription("");
+    setI18nVals({
+      en: { title: "", description: "" },
+      ro: { title: "", description: "" },
+      ar: { title: "", description: "" },
+    });
     setFile(null);
     setProgress(0);
     toast.success(t('admin.forms.uploaded'));
   }
   return (
     <form onSubmit={submit} className="space-y-3">
-      <Field label={t('admin.forms.form_title')}>
-        <TextInput value={title} onChange={(e) => setTitle(e.target.value)} />
-      </Field>
-      <Field label={t('admin.forms.description')}>
-        <TextArea
-          rows={3}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </Field>
       <Field label={t('admin.forms.pdf')}>
         <Upload onFile={setFile} accept="application/pdf" />
         {progress > 0 && (
           <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
         )}
       </Field>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">{t('admin.i18n.romanian')}</div>
-          <Field label={t('admin.i18n.title_ro')}>
-            <TextInput
-              value={i18nVals.ro.title}
-              onChange={(e) =>
-                setI18nVals((s) => ({
-                  ...s,
-                  ro: { ...s.ro, title: e.target.value },
-                }))
-              }
-            />
-          </Field>
-          <Field label={t('admin.i18n.description_ro')}>
-            <TextArea
-              rows={3}
-              value={i18nVals.ro.description}
-              onChange={(e) =>
-                setI18nVals((s) => ({
-                  ...s,
-                  ro: { ...s.ro, description: e.target.value },
-                }))
-              }
-            />
-          </Field>
+      <div className="border-t pt-4 mt-4">
+        <div className="flex gap-2 mb-3">
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('en')}
+          >
+            {t('admin.i18n.english')}
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'ro' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('ro')}
+          >
+            {t('admin.i18n.romanian')}
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded ${selectedLang === 'ar' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSelectedLang('ar')}
+          >
+            {t('admin.i18n.arabic')}
+          </button>
         </div>
-        <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">{t('admin.i18n.arabic')}</div>
-          <Field label={t('admin.i18n.title_ar')}>
+        <div className="bg-gray-50 p-4 rounded">
+          <Field label={t(`admin.i18n.title_${selectedLang}`)}>
             <TextInput
-              value={i18nVals.ar.title}
+              value={i18nVals[selectedLang].title}
               onChange={(e) =>
                 setI18nVals((s) => ({
                   ...s,
-                  ar: { ...s.ar, title: e.target.value },
+                  [selectedLang]: { ...s[selectedLang], title: e.target.value },
                 }))
               }
             />
           </Field>
-          <Field label={t('admin.i18n.description_ar')}>
+          <Field label={t(`admin.i18n.description_${selectedLang}`)}>
             <TextArea
               rows={3}
-              value={i18nVals.ar.description}
+              value={i18nVals[selectedLang].description}
               onChange={(e) =>
                 setI18nVals((s) => ({
                   ...s,
-                  ar: { ...s.ar, description: e.target.value },
+                  [selectedLang]: { ...s[selectedLang], description: e.target.value },
                 }))
               }
             />
@@ -883,41 +892,9 @@ function AdminTabs() {
         </nav>
       </div>
       <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {active === "Services" && (
-          <>
-            <div className="col-span-1">
-              <h2 className="text-xl font-semibold mb-4">
-                {t('admin.consular.title')}
-              </h2>
-              <ConsularForm />
-            </div>
-            <div className="col-span-1">
-              <ConsularList />
-            </div>
-          </>
-        )}
-        {active === "News" && (
-          <>
-            <div className="col-span-1">
-              <h2 className="text-xl font-semibold mb-4">{t('admin.news.title')}</h2>
-              <NewsForm />
-            </div>
-            <div className="col-span-1">
-              <NewsList />
-            </div>
-          </>
-        )}
-        {active === "Alerts" && (
-          <>
-            <div className="col-span-1">
-              <h2 className="text-xl font-semibold mb-4">{t('admin.alerts.title')}</h2>
-              <AlertsForm />
-            </div>
-            <div className="col-span-1">
-              <AlertsList />
-            </div>
-          </>
-        )}
+        {active === "Services" && <ConsularSection />}
+        {active === "News" && <NewsSection />}
+        {active === "Alerts" && <AlertsSection />}
         {active === "Appointments" && (
           <>
             <div className="col-span-1 lg:col-span-2">
@@ -926,17 +903,7 @@ function AdminTabs() {
             </div>
           </>
         )}
-        {active === "Forms" && (
-          <>
-            <div className="col-span-1">
-              <h2 className="text-xl font-semibold mb-4">{t('admin.forms.title')}</h2>
-              <FormsCreate />
-            </div>
-            <div className="col-span-1">
-              <FormsList />
-            </div>
-          </>
-        )}
+        {active === "Forms" && <FormsSection />}
         {active === "Submissions" && (
           <>
             <div className="col-span-1 lg:col-span-2">
@@ -948,8 +915,8 @@ function AdminTabs() {
         {active === "Settings" && (
           <>
             <div className="col-span-1 lg:col-span-2">
-              <h2 className="text-xl font-semibold mb-4">{t('admin.settings.title')}</h2>
-              <SettingsForm />
+              <h2 className="text-xl font-semibold mb-4">{t('admin.settings.site_settings')}</h2>
+              <SettingsSection />
             </div>
           </>
         )}
@@ -1012,7 +979,7 @@ function SubmissionsList() {
                 </span>
               </div>
               <div className="text-gray-600 truncate">
-                {s.email} • {s.phone}
+                {s.email} • <span dir="ltr">{s.phone}</span>
               </div>
               {s.notes && (
                 <div className="text-gray-700 mt-1">{t('admin.submissions.notes')}: {s.notes}</div>
@@ -1143,484 +1110,5 @@ function AppointmentsListAdvanced() {
         <div className="text-gray-500">{t('admin.appointments.no_appointments')}</div>
       )}
     </div>
-  );
-}
-
-function SettingsForm() {
-  const { t } = useTranslation();
-  const [settings, setSettings] = useState({
-    header: { phone: "+40 21 123 4567", email: "info@sudanembassy.ro" },
-    receiveEmail: "info@sudanembassy.ro",
-    address: "123 Diplomatic Street, Sector 1, Bucharest, Romania",
-    hero: {
-      title: "Embassy of the Republic of Sudan",
-      subtitle: "Bucharest, Romania",
-      cta1: "Book Appointment",
-      cta2: "Consular Services",
-    },
-    hours: { monThu: "9:00 AM - 4:00 PM", fri: "9:00 AM - 1:00 PM" },
-    statusBar: {
-      status: "Open today: 9:00 AM - 4:00 PM",
-      holiday: "",
-      nextAppointment: "",
-    },
-    emergency: {
-      phone: "+40 722 123 456",
-      note: "This number is for genuine emergencies only",
-    },
-    contacts: [
-      [
-        "fa-solid fa-location-dot",
-        "123 Diplomatic Street, Sector 1, Bucharest, Romania",
-      ],
-      ["fa-solid fa-phone", "+40 21 123 4567"],
-      ["fa-solid fa-envelope", "info@sudanembassy.ro"],
-    ],
-    map: {
-      lat: 44.4467127,
-      lng: 26.1035968,
-      placeLink:
-        "https://www.google.com/maps/place/Ambasada+Republicii+Sudan/@44.447707,26.1031946,17.77z/data=!4m6!3m5!1s0x40b1ff8fd7ba51a9:0x1bea18766dc4de4c!8m2!3d44.4467127!4d26.1035968!16s%2Fg%2F11vbypp9cb?entry=ttu",
-    },
-    promoSlides: [
-      {
-        title: "Hidden Treasures Cultural Tourism",
-        subtitle: "—",
-        cta: "Click Here",
-        href: "https://artsexperiments.withgoogle.com/meroe/",
-        image: "/images/1ss.jpg",
-      },
-      {
-        title: "Using the Sudanese Police Electronic Reporting Platform",
-        subtitle: "—",
-        cta: "Click Here",
-        href: "https://www.sudanpolice.net/",
-        image: "/images/2ss.jpg",
-      },
-    ],
-  });
-  useEffect(() => {
-    fetch(getApiUrl("/api/settings"))
-      .then((r) => r.json())
-      .then((d) => d && setSettings((s) => ({ ...s, ...d })));
-  }, []);
-
-  function updateContactRow(idx, field, value) {
-    setSettings((s) => {
-      const next = [...s.contacts];
-      const row = [...next[idx]];
-      if (field === "icon") row[0] = value;
-      else row[1] = value;
-      next[idx] = row;
-      return { ...s, contacts: next };
-    });
-  }
-  function addContactRow() {
-    setSettings((s) => ({
-      ...s,
-      contacts: [...s.contacts, ["fa-solid fa-circle-info", "New line"]],
-    }));
-  }
-  function removeContactRow(idx) {
-    setSettings((s) => ({
-      ...s,
-      contacts: s.contacts.filter((_, i) => i !== idx),
-    }));
-  }
-
-  async function save(e) {
-    e.preventDefault();
-    await fetch(
-      getApiUrl("/api/settings"),
-      withTokenHeaders({
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
-      })
-    );
-    toast.success(t('admin.settings.saved_settings'));
-    window.dispatchEvent(
-      new CustomEvent("toast", {
-        detail: { type: "success", text: t('admin.settings.saved_settings') },
-      })
-    );
-  }
-
-  return (
-    <form onSubmit={save} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">{t('admin.settings.header_section')}</h3>
-        <label className="block text-sm mb-1">{t('admin.settings.phone')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.header.phone}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              header: { ...s.header, phone: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.email')}</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={settings.header.email}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              header: { ...s.header, email: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1 mt-3">
-          {t('admin.settings.receive_email')}
-        </label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={settings.receiveEmail}
-          onChange={(e) =>
-            setSettings((s) => ({ ...s, receiveEmail: e.target.value }))
-          }
-        />
-        <label className="block text-sm mb-1 mt-3">{t('admin.settings.address')}</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={settings.address}
-          onChange={(e) =>
-            setSettings((s) => ({ ...s, address: e.target.value }))
-          }
-        />
-      </div>
-
-      <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">{t('admin.settings.hero_section')}</h3>
-        <label className="block text-sm mb-1">{t('admin.settings.hero_title')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.hero.title}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              hero: { ...s.hero, title: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.hero_subtitle')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.hero.subtitle}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              hero: { ...s.hero, subtitle: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.hero_cta1')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.hero.cta1}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              hero: { ...s.hero, cta1: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.hero_cta2')}</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={settings.hero.cta2}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              hero: { ...s.hero, cta2: e.target.value },
-            }))
-          }
-        />
-      </div>
-
-      <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">{t('admin.settings.status_bar')}</h3>
-        <label className="block text-sm mb-1">{t('admin.settings.status')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.statusBar.status}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              statusBar: { ...s.statusBar, status: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.holiday')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.statusBar.holiday}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              statusBar: { ...s.statusBar, holiday: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.next_appointment')}</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={settings.statusBar.nextAppointment}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              statusBar: { ...s.statusBar, nextAppointment: e.target.value },
-            }))
-          }
-        />
-      </div>
-
-      <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">{t('admin.settings.emergency_section')}</h3>
-        <label className="block text-sm mb-1">{t('admin.settings.emergency_phone')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.emergency.phone}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              emergency: { ...s.emergency, phone: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.emergency_note')}</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={settings.emergency.note}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              emergency: { ...s.emergency, note: e.target.value },
-            }))
-          }
-        />
-      </div>
-
-      <div className="bg-gray-50 p-4 rounded md:col-span-2">
-        <h3 className="font-semibold mb-2">{t('admin.settings.hours_section')}</h3>
-        <label className="block text-sm mb-1">{t('admin.settings.mon_thu')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.hours.monThu}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              hours: { ...s.hours, monThu: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.fri')}</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={settings.hours.fri}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              hours: { ...s.hours, fri: e.target.value },
-            }))
-          }
-        />
-      </div>
-
-      <div className="bg-gray-50 p-4 rounded md:col-span-2">
-        <h3 className="font-semibold mb-3">
-          {t('admin.settings.contacts_section')}
-        </h3>
-        <div className="space-y-2">
-          {settings.contacts.map((row, idx) => (
-            <div
-              key={idx}
-              className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center"
-            >
-              <input
-                className="md:col-span-4 border rounded px-3 py-2"
-                value={row[0]}
-                onChange={(e) => updateContactRow(idx, "icon", e.target.value)}
-              />
-              <input
-                className="md:col-span-7 border rounded px-3 py-2"
-                value={row[1]}
-                onChange={(e) => updateContactRow(idx, "text", e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => removeContactRow(idx)}
-                className="md:col-span-1 text-red-600"
-              >
-                {t('admin.settings.remove')}
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="mt-2">
-          <button
-            type="button"
-            onClick={addContactRow}
-            className="text-sudan-blue"
-          >
-            {t('admin.settings.add_line')}
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">{t('admin.settings.map_section')}</h3>
-        <label className="block text-sm mb-1">{t('admin.settings.latitude')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.map.lat}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              map: { ...s.map, lat: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.longitude')}</label>
-        <input
-          className="w-full border rounded px-3 py-2 mb-2"
-          value={settings.map.lng}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              map: { ...s.map, lng: e.target.value },
-            }))
-          }
-        />
-        <label className="block text-sm mb-1">{t('admin.settings.place_link')}</label>
-        <input
-          className="w-full border rounded px-3 py-2"
-          value={settings.map.placeLink}
-          onChange={(e) =>
-            setSettings((s) => ({
-              ...s,
-              map: { ...s.map, placeLink: e.target.value },
-            }))
-          }
-        />
-      </div>
-
-      <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">{t('admin.settings.promo_section')}</h3>
-        <div className="space-y-3">
-          {settings.promoSlides.map((ps, idx) => (
-            <div key={idx} className="border rounded p-3 space-y-2">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <input
-                  className="border rounded px-3 py-2"
-                  placeholder={t('admin.settings.promo_title')}
-                  value={ps.title}
-                  onChange={(e) =>
-                    setSettings((s) => {
-                      const arr = [...s.promoSlides];
-                      arr[idx] = { ...arr[idx], title: e.target.value };
-                      return { ...s, promoSlides: arr };
-                    })
-                  }
-                />
-                <input
-                  className="border rounded px-3 py-2"
-                  placeholder={t('admin.settings.promo_cta')}
-                  value={ps.cta}
-                  onChange={(e) =>
-                    setSettings((s) => {
-                      const arr = [...s.promoSlides];
-                      arr[idx] = { ...arr[idx], cta: e.target.value };
-                      return { ...s, promoSlides: arr };
-                    })
-                  }
-                />
-                <input
-                  className="border rounded px-3 py-2 md:col-span-2"
-                  placeholder={t('admin.settings.promo_subtitle')}
-                  value={ps.subtitle}
-                  onChange={(e) =>
-                    setSettings((s) => {
-                      const arr = [...s.promoSlides];
-                      arr[idx] = { ...arr[idx], subtitle: e.target.value };
-                      return { ...s, promoSlides: arr };
-                    })
-                  }
-                />
-                <input
-                  className="border rounded px-3 py-2"
-                  placeholder={t('admin.settings.promo_link')}
-                  value={ps.href}
-                  onChange={(e) =>
-                    setSettings((s) => {
-                      const arr = [...s.promoSlides];
-                      arr[idx] = { ...arr[idx], href: e.target.value };
-                      return { ...s, promoSlides: arr };
-                    })
-                  }
-                />
-                <input
-                  className="border rounded px-3 py-2"
-                  placeholder={t('admin.settings.promo_image')}
-                  value={ps.image}
-                  onChange={(e) =>
-                    setSettings((s) => {
-                      const arr = [...s.promoSlides];
-                      arr[idx] = { ...arr[idx], image: e.target.value };
-                      return { ...s, promoSlides: arr };
-                    })
-                  }
-                />
-              </div>
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="text-red-600"
-                  onClick={() =>
-                    setSettings((s) => ({
-                      ...s,
-                      promoSlides: s.promoSlides.filter((_, i) => i !== idx),
-                    }))
-                  }
-                >
-                  {t('admin.settings.remove')}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-2">
-          <button
-            type="button"
-            className="text-sudan-blue"
-            onClick={() =>
-              setSettings((s) => ({
-                ...s,
-                promoSlides: [
-                  ...s.promoSlides,
-                  {
-                    title: "",
-                    subtitle: "",
-                    cta: "Click Here",
-                    href: "#",
-                    image: "/images/1ss.jpg",
-                  },
-                ],
-              }))
-            }
-          >
-            {t('admin.settings.add_slide')}
-          </button>
-        </div>
-      </div>
-
-      <div className="md:col-span-2 flex justify-end">
-        <button className="bg-sudan-green text-white px-6 py-2 rounded">
-          {t('admin.settings.save_settings')}
-        </button>
-      </div>
-    </form>
   );
 }

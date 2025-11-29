@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getApiUrl } from "../config.js";
 
 export default function Hero() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // Prefer translations by default; allow backend settings to override when provided
   const [hero, setHero] = useState({
     title: "",
@@ -13,12 +13,12 @@ export default function Hero() {
     cta2: "",
   });
   useEffect(() => {
-    fetch(getApiUrl("/api/settings"))
+    fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
       .then((r) => r.json())
       .then((s) => {
         if (s?.hero) setHero((prev) => ({ ...prev, ...s.hero }));
       });
-  }, []);
+  }, [i18n.language]);
   useEffect(() => {
     const handleParallax = () => {
       const el = document.getElementById("hero-banner");

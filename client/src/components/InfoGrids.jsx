@@ -1,18 +1,39 @@
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
+import { getApiUrl } from "../config.js";
 
 function Hours() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [hours, setHours] = useState(null);
+
+  useEffect(() => {
+    fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
+      .then((r) => r.json())
+      .then((s) => {
+        console.log('Hours received settings:', s);
+        if (s?.hours) {
+          console.log('Hours data:', s.hours);
+          setHours(s.hours);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch hours:', err);
+      });
+  }, [i18n.language]);
+
+  if (!hours) return null;
+
   return (
     <div className="rounded-lg shadow-sm p-6 bg-gradient-to-br from-sudan-green to-[#0a6b47] text-white">
       <h3 className="text-xl font-medium mb-4">{t("contact.embassy_hours")}</h3>
       <ul className="space-y-2">
         <li className="flex justify-between">
           <span>{t("contact.mon_thu")}</span>
-          <span>{t("settings.hours.monThu")}</span>
+          <span>{hours.monThu}</span>
         </li>
         <li className="flex justify-between">
           <span>{t("contact.fri")}</span>
-          <span>{t("settings.hours.fri")}</span>
+          <span>{hours.fri}</span>
         </li>
         <li className="flex justify-between">
           <span>{t("contact.sat_sun")}</span>
@@ -29,26 +50,72 @@ function Hours() {
 }
 
 function Contacts() {
-  const { t } = useTranslation();
-  const rows = t("settings.contacts", { returnObjects: true });
+  const { t, i18n } = useTranslation();
+  const [contacts, setContacts] = useState(null);
+
+  useEffect(() => {
+    fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
+      .then((r) => r.json())
+      .then((s) => {
+        console.log('Contacts received settings:', s);
+        if (s?.contacts) {
+          console.log('Contacts data:', s.contacts);
+          // Convert contacts object to array format
+          const contactsArray = Object.entries(s.contacts).map(([key, value]) => ({
+            icon: value[0],
+            text: value[1]
+          }));
+          console.log('Contacts array:', contactsArray);
+          setContacts(contactsArray);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch contacts:', err);
+      });
+  }, [i18n.language]);
+
+  if (!contacts) return null;
+
   return (
     <div className="card p-6">
       <h3 className="text-xl font-medium mb-4">{t("contact.info")}</h3>
       <div className="space-y-3">
-        {rows.map((row) => (
-          <div key={row.icon + row.text} className="flex items-start">
-            <i className={`${row.icon} w-5 text-sudan-green mt-1`} />
-            <span className="ms-2">{row.text}</span>
-          </div>
-        ))}
+        {contacts.map((row, idx) => {
+          // Check if this is a phone number by looking for the phone icon
+          const isPhone = row.icon.includes('phone');
+          return (
+            <div key={idx} className="flex items-start">
+              <i className={`${row.icon} w-5 text-sudan-green mt-1`} />
+              <span className="ms-2" dir={isPhone ? "ltr" : undefined}>{row.text}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 function Emergency() {
-  const { t } = useTranslation();
-  const emergency = t("settings.emergency", { returnObjects: true });
+  const { t, i18n } = useTranslation();
+  const [emergency, setEmergency] = useState(null);
+
+  useEffect(() => {
+    fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
+      .then((r) => r.json())
+      .then((s) => {
+        console.log('Emergency received settings:', s);
+        if (s?.emergency) {
+          console.log('Emergency data:', s.emergency);
+          setEmergency(s.emergency);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch emergency:', err);
+      });
+  }, [i18n.language]);
+
+  if (!emergency) return null;
+
   return (
     <div className="bg-sudan-black text-white rounded-lg shadow-sm p-6">
       <h3 className="text-xl font-medium mb-4">{t("contact.emergency")}</h3>
@@ -56,7 +123,7 @@ function Emergency() {
       <div className="bg-white/10 rounded-md p-4 mb-4">
         <div className="flex items-center mb-2">
           <i className="fa-solid fa-phone-volume w-5" />
-          <span className="ms-2">{emergency.phone}</span>
+          <span className="ms-2" dir="ltr">{emergency.phone}</span>
         </div>
         <p className="text-sm text-white/80">{emergency.note}</p>
       </div>

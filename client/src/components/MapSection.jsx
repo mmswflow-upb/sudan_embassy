@@ -1,7 +1,11 @@
+import { useTranslation } from 'react-i18next';
+
 export default function MapSection() {
+  const { t } = useTranslation();
+  
   return (
     <section className="my-8 md:my-12" data-aos="fade-up">
-      <h2 className="text-2xl font-semibold mb-4">Our Location</h2>
+      <h2 className="text-2xl font-semibold mb-4">{t('common.our_location')}</h2>
       <div className="rounded-lg overflow-hidden shadow">
         <iframe
           title="Embassy Location"
