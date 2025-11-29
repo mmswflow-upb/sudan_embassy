@@ -12,20 +12,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Abd210/sudan_embassy.git"
+    "url": "git+https://github.com/mmswflow-upb/sudan_embassy.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Abd210/sudan_embassy/issues"
+    "url": "https://github.com/mmswflow-upb/sudan_embassy/issues"
   },
-  "homepage": "https://github.com/Abd210/sudan_embassy#readme",
+  "homepage": "https://github.com/mmswflow-upb/sudan_embassy#readme",
   "description": "",
   "devDependencies": {
     "concurrently": "^9.2.0"
-  },
-  "dependencies": {
-    "firebase": "^12.1.0"
   }
 }
