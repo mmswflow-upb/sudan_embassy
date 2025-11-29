@@ -41,6 +41,14 @@ html { scroll-behavior: smooth; }
 /* Smooth snap for horizontal carousels */
 .snap-x { scroll-snap-type: x mandatory; }
 .snap-start { scroll-snap-align: start; }
+.snap-mandatory { scroll-snap-type: x mandatory; }
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 .btn-flag {
   background: linear-gradient(90deg,#007229 0%,#000 100%);
 }

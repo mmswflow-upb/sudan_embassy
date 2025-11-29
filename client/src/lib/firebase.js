@@ -5,13 +5,13 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDZ_rjM0FM3JBwbwk0AOuLsb6AHbKs12pE",
-  authDomain: "sudan-embassy.firebaseapp.com",
-  projectId: "sudan-embassy",
-  storageBucket: "sudan-embassy.firebasestorage.app",
-  messagingSenderId: "919606479278",
-  appId: "1:919606479278:web:4f37a0bfcfadf04dcea03f",
-  measurementId: "G-LZG5WD3SDR",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);

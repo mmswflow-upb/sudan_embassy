@@ -15,6 +15,7 @@ import Upload from "../components/Upload";
 import AdminLogin from "./AdminLogin";
 import { auth } from "../lib/firebase";
 import { signOut } from "firebase/auth";
+import { useTranslation } from "react-i18next";
 
 import { getApiUrl } from "../config.js";
 
@@ -29,71 +30,26 @@ async function api(path, options = {}) {
 }
 
 export default function AdminPage() {
-  const [me, setMe] = useState({ authenticated: false });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [cred, setCred] = useState({ username: "", password: "" });
+  const [authenticated, setAuthenticated] = useState(false);
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    api("/api/me")
-      .then(setMe)
-      .catch(() => setMe({ authenticated: false }))
-      .finally(() => setLoading(false));
-  }, []);
-
-  async function login(e) {
-    e.preventDefault();
-    setError("");
-    try {
-      await api("/api/login", { method: "POST", body: JSON.stringify(form) });
-      const meNow = await api("/api/me");
-      setMe(meNow);
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  async function logout() {
-    await api("/api/logout", { method: "POST" });
-    setMe({ authenticated: false });
-  }
-
-  async function updateCreds(e) {
-    e.preventDefault();
-    setError("");
-    try {
-      await api("/api/admin/credentials", {
-        method: "POST",
-        body: JSON.stringify(cred),
-      });
-      setCred({ username: "", password: "" });
-      alert("Credentials updated");
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  if (loading)
-    return <div className="container mx-auto px-4 py-10">Loading...</div>;
-
-  if (!me.authenticated) {
-    return <AdminLogin onAuthed={() => setMe({ authenticated: true })} />;
+  if (!authenticated) {
+    return <AdminLogin onAuthed={() => setAuthenticated(true)} />;
   }
 
   return (
     <main className="container mx-auto px-4 py-10 space-y-6">
       <PageToaster />
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-sudan-black">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-sudan-black">{t('admin.dashboard')}</h1>
         <button
           className="bg-sudan-black text-white px-4 py-2 rounded"
           onClick={() => {
-            logout();
             signOut(auth).catch(() => {});
+            setAuthenticated(false);
           }}
         >
-          Logout
+          {t('admin.logout')}
         </button>
       </div>
 
@@ -113,6 +69,7 @@ function FileInput({ onChange }) {
 }
 
 function ConsularForm() {
+  const { t } = useTranslation();
   const schema = z.object({
     name: z.string().min(2),
     icon: z.string().min(1),
@@ -172,24 +129,24 @@ function ConsularForm() {
     reset();
     setFile(null);
     setProgress(0);
-    toast.success("Service saved");
+    toast.success(t('admin.consular.saved'));
   });
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <Field label="Name">
+      <Field label={t('admin.consular.name')}>
         <TextInput {...register("name")} />
         {errors.name && (
           <div className="text-red-600 text-xs mt-1">{errors.name.message}</div>
         )}
       </Field>
-      <Field label="Icon (Font Awesome class)">
+      <Field label={t('admin.consular.icon')}>
         <TextInput {...register("icon")} />
         {errors.icon && (
           <div className="text-red-600 text-xs mt-1">{errors.icon.message}</div>
         )}
       </Field>
-      <Field label="Details">
+      <Field label={t('admin.consular.details')}>
         <TextArea rows={4} {...register("details")} />
         {errors.details && (
           <div className="text-red-600 text-xs mt-1">
@@ -197,16 +154,16 @@ function ConsularForm() {
           </div>
         )}
       </Field>
-      <Field label="Attachment (image or PDF) (optional)">
+      <Field label={t('admin.consular.attachment')}>
         <Upload onFile={setFile} accept="image/*,application/pdf" />
         {progress > 0 && (
-          <div className="text-sm text-gray-600 mt-1">Upload: {progress}%</div>
+          <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
         )}
       </Field>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">Romanian</div>
-          <Field label="Name (ro)">
+          <div className="font-medium mb-2">{t('admin.i18n.romanian')}</div>
+          <Field label={t('admin.i18n.name_ro')}>
             <TextInput
               value={i18nVals.ro.name}
               onChange={(e) =>
@@ -217,7 +174,7 @@ function ConsularForm() {
               }
             />
           </Field>
-          <Field label="Details (ro)">
+          <Field label={t('admin.i18n.details_ro')}>
             <TextArea
               rows={3}
               value={i18nVals.ro.details}
@@ -231,8 +188,8 @@ function ConsularForm() {
           </Field>
         </div>
         <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">Arabic</div>
-          <Field label="Name (ar)">
+          <div className="font-medium mb-2">{t('admin.i18n.arabic')}</div>
+          <Field label={t('admin.i18n.name_ar')}>
             <TextInput
               value={i18nVals.ar.name}
               onChange={(e) =>
@@ -243,7 +200,7 @@ function ConsularForm() {
               }
             />
           </Field>
-          <Field label="Details (ar)">
+          <Field label={t('admin.i18n.details_ar')}>
             <TextArea
               rows={3}
               value={i18nVals.ar.details}
@@ -258,7 +215,7 @@ function ConsularForm() {
         </div>
       </div>
       <Button disabled={isSubmitting}>
-        {isSubmitting ? "Saving..." : "Save"}
+        {isSubmitting ? t('admin.consular.saving') : t('admin.consular.save')}
       </Button>
     </form>
   );
@@ -283,6 +240,7 @@ function useAdminList(path) {
 }
 
 function NewsForm() {
+  const { t } = useTranslation();
   const schema = z.object({
     title: z.string().min(3),
     summary: z.string().min(10),
@@ -337,11 +295,11 @@ function NewsForm() {
     reset();
     setFile(null);
     setProgress(0);
-    toast.success("News published");
+    toast.success(t('admin.news.published'));
   });
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <Field label="Title">
+      <Field label={t('admin.news.news_title')}>
         <TextInput {...register("title")} />
         {errors.title && (
           <div className="text-red-600 text-xs mt-1">
@@ -349,7 +307,7 @@ function NewsForm() {
           </div>
         )}
       </Field>
-      <Field label="Summary">
+      <Field label={t('admin.news.summary')}>
         <TextArea rows={3} {...register("summary")} />
         {errors.summary && (
           <div className="text-red-600 text-xs mt-1">
@@ -357,22 +315,22 @@ function NewsForm() {
           </div>
         )}
       </Field>
-      <Field label="Tag">
+      <Field label={t('admin.news.tag')}>
         <TextInput {...register("tag")} />
         {errors.tag && (
           <div className="text-red-600 text-xs mt-1">{errors.tag.message}</div>
         )}
       </Field>
-      <Field label="Attachment (image or PDF)">
+      <Field label={t('admin.news.attachment')}>
         <Upload onFile={setFile} accept="image/*,application/pdf" />
         {progress > 0 && (
-          <div className="text-sm text-gray-600 mt-1">Upload: {progress}%</div>
+          <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
         )}
       </Field>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">Romanian</div>
-          <Field label="Title (ro)">
+          <div className="font-medium mb-2">{t('admin.i18n.romanian')}</div>
+          <Field label={t('admin.i18n.title_ro')}>
             <TextInput
               value={i18nVals.ro.title}
               onChange={(e) =>
@@ -383,7 +341,7 @@ function NewsForm() {
               }
             />
           </Field>
-          <Field label="Summary (ro)">
+          <Field label={t('admin.i18n.summary_ro')}>
             <TextArea
               rows={3}
               value={i18nVals.ro.summary}
@@ -395,7 +353,7 @@ function NewsForm() {
               }
             />
           </Field>
-          <Field label="Tag (ro)">
+          <Field label={t('admin.i18n.tag_ro')}>
             <TextInput
               value={i18nVals.ro.tag}
               onChange={(e) =>
@@ -408,8 +366,8 @@ function NewsForm() {
           </Field>
         </div>
         <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">Arabic</div>
-          <Field label="Title (ar)">
+          <div className="font-medium mb-2">{t('admin.i18n.arabic')}</div>
+          <Field label={t('admin.i18n.title_ar')}>
             <TextInput
               value={i18nVals.ar.title}
               onChange={(e) =>
@@ -420,7 +378,7 @@ function NewsForm() {
               }
             />
           </Field>
-          <Field label="Summary (ar)">
+          <Field label={t('admin.i18n.summary_ar')}>
             <TextArea
               rows={3}
               value={i18nVals.ar.summary}
@@ -432,7 +390,7 @@ function NewsForm() {
               }
             />
           </Field>
-          <Field label="Tag (ar)">
+          <Field label={t('admin.i18n.tag_ar')}>
             <TextInput
               value={i18nVals.ar.tag}
               onChange={(e) =>
@@ -449,13 +407,14 @@ function NewsForm() {
         className="bg-sudan-blue hover:bg-blue-800"
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Publishing..." : "Publish"}
+        {isSubmitting ? t('admin.news.publishing') : t('admin.news.publish')}
       </Button>
     </form>
   );
 }
 
 function AlertsForm() {
+  const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const [level, setLevel] = useState("info");
   const [active, setActive] = useState(true);
@@ -507,12 +466,12 @@ function AlertsForm() {
     setActive(true);
     setFile(null);
     setProgress(0);
-    toast.success("Alert created");
+    toast.success(t('admin.alerts.created'));
   }
   return (
     <form onSubmit={submit} className="space-y-3">
       <div>
-        <label className="block text-sm font-medium mb-1">Message</label>
+        <label className="block text-sm font-medium mb-1">{t('admin.alerts.message')}</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={message}
@@ -521,7 +480,7 @@ function AlertsForm() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium mb-1">Level</label>
+          <label className="block text-sm font-medium mb-1">{t('admin.alerts.level')}</label>
           <select
             className="w-full border rounded px-3 py-2"
             value={level}
@@ -538,19 +497,19 @@ function AlertsForm() {
             checked={active}
             onChange={(e) => setActive(e.target.checked)}
           />{" "}
-          Active
+          {t('admin.alerts.active')}
         </label>
       </div>
-      <Field label="Attachment (optional – image or PDF)">
+      <Field label={t('admin.alerts.attachment')}>
         <Upload onFile={setFile} accept="image/*,application/pdf" />
         {progress > 0 && (
-          <div className="text-sm text-gray-600 mt-1">Upload: {progress}%</div>
+          <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
         )}
       </Field>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">Romanian</div>
-          <label className="block text-sm font-medium mb-1">Message (ro)</label>
+          <div className="font-medium mb-2">{t('admin.i18n.romanian')}</div>
+          <label className="block text-sm font-medium mb-1">{t('admin.i18n.message_ro')}</label>
           <input
             className="w-full border rounded px-3 py-2"
             value={i18nVals.ro.message}
@@ -560,8 +519,8 @@ function AlertsForm() {
           />
         </div>
         <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">Arabic</div>
-          <label className="block text-sm font-medium mb-1">Message (ar)</label>
+          <div className="font-medium mb-2">{t('admin.i18n.arabic')}</div>
+          <label className="block text-sm font-medium mb-1">{t('admin.i18n.message_ar')}</label>
           <input
             className="w-full border rounded px-3 py-2"
             value={i18nVals.ar.message}
@@ -572,7 +531,7 @@ function AlertsForm() {
         </div>
       </div>
       <button className="bg-sudan-black text-white px-6 py-2 rounded">
-        Create Alert
+        {t('admin.alerts.create')}
       </button>
     </form>
   );
@@ -611,6 +570,7 @@ function AppointmentsList() {
 }
 
 function ConsularList() {
+  const { t } = useTranslation();
   const [items, setItems] = useAdminList("/api/consular-services");
   async function remove(id) {
     await fetch(
@@ -621,7 +581,7 @@ function ConsularList() {
   }
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-semibold mb-4">Services List</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('admin.consular.list_title')}</h2>
       <div className="space-y-2 max-h-[360px] overflow-auto">
         {items.map((i) => (
           <div
@@ -633,12 +593,12 @@ function ConsularList() {
               <span className="font-medium">{i.name}</span>
             </div>
             <button className="text-red-600" onClick={() => remove(i.id)}>
-              Delete
+              {t('admin.consular.delete')}
             </button>
           </div>
         ))}
         {items.length === 0 && (
-          <div className="text-gray-500">No services yet.</div>
+          <div className="text-gray-500">{t('admin.consular.no_services')}</div>
         )}
       </div>
     </div>
@@ -646,6 +606,7 @@ function ConsularList() {
 }
 
 function NewsList() {
+  const { t } = useTranslation();
   const [items, setItems] = useAdminList("/api/news");
   async function remove(id) {
     await fetch(
@@ -656,7 +617,7 @@ function NewsList() {
   }
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-semibold mb-4">News List</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('admin.news.list_title')}</h2>
       <div className="space-y-2 max-h-[360px] overflow-auto">
         {items.map((i) => (
           <div
@@ -665,12 +626,12 @@ function NewsList() {
           >
             <div className="font-medium">{i.title}</div>
             <button className="text-red-600" onClick={() => remove(i.id)}>
-              Delete
+              {t('admin.news.delete')}
             </button>
           </div>
         ))}
         {items.length === 0 && (
-          <div className="text-gray-500">No news yet.</div>
+          <div className="text-gray-500">{t('admin.news.no_news')}</div>
         )}
       </div>
     </div>
@@ -678,6 +639,7 @@ function NewsList() {
 }
 
 function AlertsList() {
+  const { t } = useTranslation();
   const [items, setItems] = useAdminList("/api/alerts");
   async function remove(id) {
     await fetch(
@@ -688,7 +650,7 @@ function AlertsList() {
   }
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-semibold mb-4">Alerts List</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('admin.alerts.list_title')}</h2>
       <div className="space-y-2 max-h-[360px] overflow-auto">
         {items.map((i) => (
           <div
@@ -697,12 +659,12 @@ function AlertsList() {
           >
             <div>{i.message}</div>
             <button className="text-red-600" onClick={() => remove(i.id)}>
-              Delete
+              {t('admin.alerts.delete')}
             </button>
           </div>
         ))}
         {items.length === 0 && (
-          <div className="text-gray-500">No alerts yet.</div>
+          <div className="text-gray-500">{t('admin.alerts.no_alerts')}</div>
         )}
       </div>
     </div>
@@ -710,6 +672,7 @@ function AlertsList() {
 }
 
 function FormsCreate() {
+  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
@@ -720,7 +683,7 @@ function FormsCreate() {
   });
   async function submit(e) {
     e.preventDefault();
-    if (!file) return toast.error("Select a PDF file");
+    if (!file) return toast.error(t('admin.forms.select_pdf'));
     const { downloadURL } = await uploadToStorage("forms", file, setProgress);
     const token = localStorage.getItem("fbToken") || "";
     await fetch(getApiUrl("/api/forms"), {
@@ -742,30 +705,30 @@ function FormsCreate() {
     setDescription("");
     setFile(null);
     setProgress(0);
-    toast.success("Form uploaded");
+    toast.success(t('admin.forms.uploaded'));
   }
   return (
     <form onSubmit={submit} className="space-y-3">
-      <Field label="Title">
+      <Field label={t('admin.forms.form_title')}>
         <TextInput value={title} onChange={(e) => setTitle(e.target.value)} />
       </Field>
-      <Field label="Description">
+      <Field label={t('admin.forms.description')}>
         <TextArea
           rows={3}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
       </Field>
-      <Field label="PDF">
+      <Field label={t('admin.forms.pdf')}>
         <Upload onFile={setFile} accept="application/pdf" />
         {progress > 0 && (
-          <div className="text-sm text-gray-600 mt-1">Upload: {progress}%</div>
+          <div className="text-sm text-gray-600 mt-1">{t('admin.common.upload_progress', { progress })}</div>
         )}
       </Field>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">Romanian</div>
-          <Field label="Title (ro)">
+          <div className="font-medium mb-2">{t('admin.i18n.romanian')}</div>
+          <Field label={t('admin.i18n.title_ro')}>
             <TextInput
               value={i18nVals.ro.title}
               onChange={(e) =>
@@ -776,7 +739,7 @@ function FormsCreate() {
               }
             />
           </Field>
-          <Field label="Description (ro)">
+          <Field label={t('admin.i18n.description_ro')}>
             <TextArea
               rows={3}
               value={i18nVals.ro.description}
@@ -790,8 +753,8 @@ function FormsCreate() {
           </Field>
         </div>
         <div className="bg-gray-50 p-3 rounded">
-          <div className="font-medium mb-2">Arabic</div>
-          <Field label="Title (ar)">
+          <div className="font-medium mb-2">{t('admin.i18n.arabic')}</div>
+          <Field label={t('admin.i18n.title_ar')}>
             <TextInput
               value={i18nVals.ar.title}
               onChange={(e) =>
@@ -802,7 +765,7 @@ function FormsCreate() {
               }
             />
           </Field>
-          <Field label="Description (ar)">
+          <Field label={t('admin.i18n.description_ar')}>
             <TextArea
               rows={3}
               value={i18nVals.ar.description}
@@ -816,12 +779,13 @@ function FormsCreate() {
           </Field>
         </div>
       </div>
-      <Button>Save</Button>
+      <Button>{t('admin.forms.save')}</Button>
     </form>
   );
 }
 
 function FormsList() {
+  const { t } = useTranslation();
   const [items, setItems] = useAdminList("/api/forms");
   async function remove(id) {
     await fetch(
@@ -832,7 +796,7 @@ function FormsList() {
   }
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-semibold mb-4">Forms</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('admin.forms.list_title')}</h2>
       <div className="space-y-2 max-h-[360px] overflow-auto">
         {items.map((i) => (
           <div
@@ -847,16 +811,16 @@ function FormsList() {
                 rel="noreferrer"
                 className="text-sudan-blue"
               >
-                Download
+                {t('admin.forms.download')}
               </a>
               <button className="text-red-600" onClick={() => remove(i.id)}>
-                Delete
+                {t('admin.forms.delete')}
               </button>
             </div>
           </div>
         ))}
         {items.length === 0 && (
-          <div className="text-gray-500">No forms yet.</div>
+          <div className="text-gray-500">{t('admin.forms.no_forms')}</div>
         )}
       </div>
     </div>
@@ -864,32 +828,57 @@ function FormsList() {
 }
 
 function AdminTabs() {
-  const tabs = [
-    "Services",
-    "News",
-    "Alerts",
-    "Forms",
-    "Appointments",
-    "Submissions",
-    "Settings",
+  const { t } = useTranslation();
+  const tabGroups = [
+    {
+      name: t('admin.tabs.content_management'),
+      tabs: [
+        { key: "Services", label: t('admin.tabs.services') },
+        { key: "News", label: t('admin.tabs.news') },
+        { key: "Alerts", label: t('admin.tabs.alerts') },
+        { key: "Forms", label: t('admin.tabs.forms') },
+      ]
+    },
+    {
+      name: t('admin.tabs.user_data'),
+      tabs: [
+        { key: "Appointments", label: t('admin.tabs.appointments') },
+        { key: "Submissions", label: t('admin.tabs.submissions') },
+      ]
+    },
+    {
+      name: t('admin.tabs.configuration'),
+      tabs: [
+        { key: "Settings", label: t('admin.tabs.settings') },
+      ]
+    }
   ];
   const [active, setActive] = useState("Services");
   return (
     <div className="bg-white rounded-lg shadow-sm">
       <div className="border-b px-4">
-        <nav className="flex flex-wrap">
-          {tabs.map((t) => (
-            <button
-              key={t}
-              className={`py-3 px-4 -mb-px border-b-2 ${
-                active === t
-                  ? "border-sudan-green text-sudan-green"
-                  : "border-transparent text-gray-600"
-              }`}
-              onClick={() => setActive(t)}
-            >
-              {t}
-            </button>
+        <nav className="flex flex-col gap-4 py-2">
+          {tabGroups.map((group, idx) => (
+            <div key={idx} className="space-y-2">
+              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2">
+                {group.name}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {group.tabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    className={`py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                      active === tab.key
+                        ? "bg-sudan-green text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                    onClick={() => setActive(tab.key)}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
       </div>
@@ -898,7 +887,7 @@ function AdminTabs() {
           <>
             <div className="col-span-1">
               <h2 className="text-xl font-semibold mb-4">
-                Create Consular Service
+                {t('admin.consular.title')}
               </h2>
               <ConsularForm />
             </div>
@@ -910,7 +899,7 @@ function AdminTabs() {
         {active === "News" && (
           <>
             <div className="col-span-1">
-              <h2 className="text-xl font-semibold mb-4">Create News</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('admin.news.title')}</h2>
               <NewsForm />
             </div>
             <div className="col-span-1">
@@ -921,7 +910,7 @@ function AdminTabs() {
         {active === "Alerts" && (
           <>
             <div className="col-span-1">
-              <h2 className="text-xl font-semibold mb-4">Create Alert</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('admin.alerts.title')}</h2>
               <AlertsForm />
             </div>
             <div className="col-span-1">
@@ -932,7 +921,7 @@ function AdminTabs() {
         {active === "Appointments" && (
           <>
             <div className="col-span-1 lg:col-span-2">
-              <h2 className="text-xl font-semibold mb-4">Appointments</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('admin.appointments.title')}</h2>
               <AppointmentsListAdvanced />
             </div>
           </>
@@ -940,7 +929,7 @@ function AdminTabs() {
         {active === "Forms" && (
           <>
             <div className="col-span-1">
-              <h2 className="text-xl font-semibold mb-4">Upload Form</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('admin.forms.title')}</h2>
               <FormsCreate />
             </div>
             <div className="col-span-1">
@@ -951,7 +940,7 @@ function AdminTabs() {
         {active === "Submissions" && (
           <>
             <div className="col-span-1 lg:col-span-2">
-              <h2 className="text-xl font-semibold mb-4">Public Submissions</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('admin.submissions.title')}</h2>
               <SubmissionsList />
             </div>
           </>
@@ -959,7 +948,7 @@ function AdminTabs() {
         {active === "Settings" && (
           <>
             <div className="col-span-1 lg:col-span-2">
-              <h2 className="text-xl font-semibold mb-4">Site Settings</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('admin.settings.title')}</h2>
               <SettingsForm />
             </div>
           </>
@@ -970,6 +959,7 @@ function AdminTabs() {
 }
 
 function SubmissionsList() {
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState("");
   useEffect(() => {
@@ -997,15 +987,15 @@ function SubmissionsList() {
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold">Submissions</h3>
+        <h3 className="font-semibold">{t('admin.submissions.title')}</h3>
         <select
           className="border rounded px-2 py-1"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
-          <option value="">All types</option>
-          <option value="consular">Consular</option>
-          <option value="form">Forms</option>
+          <option value="">{t('admin.submissions.all_types')}</option>
+          <option value="consular">{t('admin.submissions.consular')}</option>
+          <option value="form">{t('admin.submissions.forms')}</option>
         </select>
       </div>
       <div className="space-y-2 max-h-[480px] overflow-auto">
@@ -1025,7 +1015,7 @@ function SubmissionsList() {
                 {s.email} • {s.phone}
               </div>
               {s.notes && (
-                <div className="text-gray-700 mt-1">Notes: {s.notes}</div>
+                <div className="text-gray-700 mt-1">{t('admin.submissions.notes')}: {s.notes}</div>
               )}
               {s.fileUrl && (
                 <a
@@ -1034,7 +1024,7 @@ function SubmissionsList() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  View file
+                  {t('admin.submissions.view_file')}
                 </a>
               )}
             </div>
@@ -1054,19 +1044,19 @@ function SubmissionsList() {
                 className="text-sudan-green"
                 onClick={() => setStatus(s.id, "done")}
               >
-                Mark Done
+                {t('admin.submissions.mark_done')}
               </button>
               <button
                 className="text-red-600"
                 onClick={() => setStatus(s.id, "rejected")}
               >
-                Reject
+                {t('admin.submissions.reject')}
               </button>
             </div>
           </div>
         ))}
         {items.length === 0 && (
-          <div className="text-gray-500">No submissions yet.</div>
+          <div className="text-gray-500">{t('admin.submissions.no_submissions')}</div>
         )}
       </div>
     </div>
@@ -1074,6 +1064,7 @@ function SubmissionsList() {
 }
 
 function AppointmentsListAdvanced() {
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("fbToken") || "";
@@ -1134,28 +1125,29 @@ function AppointmentsListAdvanced() {
               className="text-sudan-green"
               onClick={() => setStatus(a.id, "approved")}
             >
-              Approve
+              {t('admin.appointments.approve')}
             </button>
             <button
               className="text-red-600"
               onClick={() => setStatus(a.id, "rejected")}
             >
-              Reject
+              {t('admin.appointments.reject')}
             </button>
             <button className="text-gray-500" onClick={() => remove(a.id)}>
-              Delete
+              {t('admin.appointments.delete')}
             </button>
           </div>
         </div>
       ))}
       {items.length === 0 && (
-        <div className="text-gray-500">No appointments yet.</div>
+        <div className="text-gray-500">{t('admin.appointments.no_appointments')}</div>
       )}
     </div>
   );
 }
 
 function SettingsForm() {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState({
     header: { phone: "+40 21 123 4567", email: "info@sudanembassy.ro" },
     receiveEmail: "info@sudanembassy.ro",
@@ -1246,10 +1238,10 @@ function SettingsForm() {
         body: JSON.stringify(settings),
       })
     );
-    toast.success("Saved settings");
+    toast.success(t('admin.settings.saved_settings'));
     window.dispatchEvent(
       new CustomEvent("toast", {
-        detail: { type: "success", text: "Settings saved" },
+        detail: { type: "success", text: t('admin.settings.saved_settings') },
       })
     );
   }
@@ -1257,8 +1249,8 @@ function SettingsForm() {
   return (
     <form onSubmit={save} className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">Header</h3>
-        <label className="block text-sm mb-1">Phone</label>
+        <h3 className="font-semibold mb-2">{t('admin.settings.header_section')}</h3>
+        <label className="block text-sm mb-1">{t('admin.settings.phone')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.header.phone}
@@ -1269,7 +1261,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">Email</label>
+        <label className="block text-sm mb-1">{t('admin.settings.email')}</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={settings.header.email}
@@ -1281,7 +1273,7 @@ function SettingsForm() {
           }
         />
         <label className="block text-sm mb-1 mt-3">
-          Receive contact messages at
+          {t('admin.settings.receive_email')}
         </label>
         <input
           className="w-full border rounded px-3 py-2"
@@ -1290,7 +1282,7 @@ function SettingsForm() {
             setSettings((s) => ({ ...s, receiveEmail: e.target.value }))
           }
         />
-        <label className="block text-sm mb-1 mt-3">Address</label>
+        <label className="block text-sm mb-1 mt-3">{t('admin.settings.address')}</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={settings.address}
@@ -1301,8 +1293,8 @@ function SettingsForm() {
       </div>
 
       <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">Hero</h3>
-        <label className="block text-sm mb-1">Title</label>
+        <h3 className="font-semibold mb-2">{t('admin.settings.hero_section')}</h3>
+        <label className="block text-sm mb-1">{t('admin.settings.hero_title')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.hero.title}
@@ -1313,7 +1305,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">Subtitle</label>
+        <label className="block text-sm mb-1">{t('admin.settings.hero_subtitle')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.hero.subtitle}
@@ -1324,7 +1316,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">CTA 1</label>
+        <label className="block text-sm mb-1">{t('admin.settings.hero_cta1')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.hero.cta1}
@@ -1335,7 +1327,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">CTA 2</label>
+        <label className="block text-sm mb-1">{t('admin.settings.hero_cta2')}</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={settings.hero.cta2}
@@ -1349,8 +1341,8 @@ function SettingsForm() {
       </div>
 
       <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">Status Bar</h3>
-        <label className="block text-sm mb-1">Status</label>
+        <h3 className="font-semibold mb-2">{t('admin.settings.status_bar')}</h3>
+        <label className="block text-sm mb-1">{t('admin.settings.status')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.statusBar.status}
@@ -1361,7 +1353,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">Holiday</label>
+        <label className="block text-sm mb-1">{t('admin.settings.holiday')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.statusBar.holiday}
@@ -1372,7 +1364,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">Next Appointment</label>
+        <label className="block text-sm mb-1">{t('admin.settings.next_appointment')}</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={settings.statusBar.nextAppointment}
@@ -1386,8 +1378,8 @@ function SettingsForm() {
       </div>
 
       <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">Emergency</h3>
-        <label className="block text-sm mb-1">Phone</label>
+        <h3 className="font-semibold mb-2">{t('admin.settings.emergency_section')}</h3>
+        <label className="block text-sm mb-1">{t('admin.settings.emergency_phone')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.emergency.phone}
@@ -1398,7 +1390,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">Note</label>
+        <label className="block text-sm mb-1">{t('admin.settings.emergency_note')}</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={settings.emergency.note}
@@ -1412,8 +1404,8 @@ function SettingsForm() {
       </div>
 
       <div className="bg-gray-50 p-4 rounded md:col-span-2">
-        <h3 className="font-semibold mb-2">Hours</h3>
-        <label className="block text-sm mb-1">Mon-Thu</label>
+        <h3 className="font-semibold mb-2">{t('admin.settings.hours_section')}</h3>
+        <label className="block text-sm mb-1">{t('admin.settings.mon_thu')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.hours.monThu}
@@ -1424,7 +1416,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">Fri</label>
+        <label className="block text-sm mb-1">{t('admin.settings.fri')}</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={settings.hours.fri}
@@ -1439,7 +1431,7 @@ function SettingsForm() {
 
       <div className="bg-gray-50 p-4 rounded md:col-span-2">
         <h3 className="font-semibold mb-3">
-          Contact Lines (icon class + text)
+          {t('admin.settings.contacts_section')}
         </h3>
         <div className="space-y-2">
           {settings.contacts.map((row, idx) => (
@@ -1462,7 +1454,7 @@ function SettingsForm() {
                 onClick={() => removeContactRow(idx)}
                 className="md:col-span-1 text-red-600"
               >
-                Remove
+                {t('admin.settings.remove')}
               </button>
             </div>
           ))}
@@ -1473,14 +1465,14 @@ function SettingsForm() {
             onClick={addContactRow}
             className="text-sudan-blue"
           >
-            + Add line
+            {t('admin.settings.add_line')}
           </button>
         </div>
       </div>
 
       <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">Map</h3>
-        <label className="block text-sm mb-1">Latitude</label>
+        <h3 className="font-semibold mb-2">{t('admin.settings.map_section')}</h3>
+        <label className="block text-sm mb-1">{t('admin.settings.latitude')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.map.lat}
@@ -1491,7 +1483,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">Longitude</label>
+        <label className="block text-sm mb-1">{t('admin.settings.longitude')}</label>
         <input
           className="w-full border rounded px-3 py-2 mb-2"
           value={settings.map.lng}
@@ -1502,7 +1494,7 @@ function SettingsForm() {
             }))
           }
         />
-        <label className="block text-sm mb-1">Place Link</label>
+        <label className="block text-sm mb-1">{t('admin.settings.place_link')}</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={settings.map.placeLink}
@@ -1516,14 +1508,14 @@ function SettingsForm() {
       </div>
 
       <div className="bg-gray-50 p-4 rounded">
-        <h3 className="font-semibold mb-2">Promo Slides</h3>
+        <h3 className="font-semibold mb-2">{t('admin.settings.promo_section')}</h3>
         <div className="space-y-3">
           {settings.promoSlides.map((ps, idx) => (
             <div key={idx} className="border rounded p-3 space-y-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <input
                   className="border rounded px-3 py-2"
-                  placeholder="Title"
+                  placeholder={t('admin.settings.promo_title')}
                   value={ps.title}
                   onChange={(e) =>
                     setSettings((s) => {
@@ -1535,7 +1527,7 @@ function SettingsForm() {
                 />
                 <input
                   className="border rounded px-3 py-2"
-                  placeholder="CTA"
+                  placeholder={t('admin.settings.promo_cta')}
                   value={ps.cta}
                   onChange={(e) =>
                     setSettings((s) => {
@@ -1547,7 +1539,7 @@ function SettingsForm() {
                 />
                 <input
                   className="border rounded px-3 py-2 md:col-span-2"
-                  placeholder="Subtitle"
+                  placeholder={t('admin.settings.promo_subtitle')}
                   value={ps.subtitle}
                   onChange={(e) =>
                     setSettings((s) => {
@@ -1559,7 +1551,7 @@ function SettingsForm() {
                 />
                 <input
                   className="border rounded px-3 py-2"
-                  placeholder="Link"
+                  placeholder={t('admin.settings.promo_link')}
                   value={ps.href}
                   onChange={(e) =>
                     setSettings((s) => {
@@ -1571,7 +1563,7 @@ function SettingsForm() {
                 />
                 <input
                   className="border rounded px-3 py-2"
-                  placeholder="Image (URL or /images/..)"
+                  placeholder={t('admin.settings.promo_image')}
                   value={ps.image}
                   onChange={(e) =>
                     setSettings((s) => {
@@ -1593,7 +1585,7 @@ function SettingsForm() {
                     }))
                   }
                 >
-                  Remove
+                  {t('admin.settings.remove')}
                 </button>
               </div>
             </div>
@@ -1619,14 +1611,14 @@ function SettingsForm() {
               }))
             }
           >
-            + Add slide
+            {t('admin.settings.add_slide')}
           </button>
         </div>
       </div>
 
       <div className="md:col-span-2 flex justify-end">
         <button className="bg-sudan-green text-white px-6 py-2 rounded">
-          Save Settings
+          {t('admin.settings.save_settings')}
         </button>
       </div>
     </form>

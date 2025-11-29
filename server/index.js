@@ -2,7 +2,6 @@ const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 const express = require("express");
 const fs = require("fs");
-const session = require("express-session");
 const cors = require("cors");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
@@ -26,39 +25,31 @@ try {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Basic in-memory credential store (can be changed via admin endpoint)
-const credentials = {
-  username: "embassy",
-  password: "123",
-};
+// Parse CORS origins from environment variable or use defaults
+const corsOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
+  : ["http://localhost:5173"];
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://sudan-embassy.web.app",
-      "https://sudan-embassy.firebaseapp.com",
-    ],
+    origin: corsOrigins,
     credentials: true,
     methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "replace_this_secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { httpOnly: true, sameSite: "lax" },
-  })
-);
 
 // Multer memory storage for file uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.get("/", (req, res) => {
   res.json({ message: "API up" });
+});
+
+// Health check endpoint for Cloud Run
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "healthy" });
 });
 
 // Server-side upload to Firebase Storage to avoid client-side CORS
@@ -211,56 +202,15 @@ async function requireFirebaseAuth(req, res, next) {
 }
 
 async function requireAnyAuth(req, res, next) {
-  if (req.session && req.session.user) return next();
   const decoded = await verifyIdToken(req.headers.authorization);
   if (decoded) {
     req.user = decoded;
     return next();
   }
-  return res.status(401).json({ error: "Unauthorized" });
+  return res.status(401).json({ error: "Unauthorized - Firebase authentication required" });
 }
 
 // (upload middleware defined above)
-
-// Auth routes
-app.post("/api/login", (req, res) => {
-  const { username, password } = req.body || {};
-  if (username === credentials.username && password === credentials.password) {
-    req.session.user = { username };
-    return res.json({ ok: true });
-  }
-  return res.status(401).json({ ok: false, error: "Invalid credentials" });
-});
-
-app.post("/api/logout", (req, res) => {
-  req.session.destroy(() => res.json({ ok: true }));
-});
-
-app.get("/api/me", (req, res) => {
-  if (req.session.user)
-    return res.json({ authenticated: true, user: req.session.user });
-  return res.json({ authenticated: false });
-});
-
-// Protect middleware
-function requireAuth(req, res, next) {
-  if (req.session.user) return next();
-  return res.status(401).json({ error: "Unauthorized" });
-}
-
-// Admin endpoints
-app.get("/api/admin/secret", requireAuth, (req, res) => {
-  res.json({ message: "Admin data placeholder" });
-});
-
-app.post("/api/admin/credentials", requireAuth, (req, res) => {
-  const { username, password } = req.body || {};
-  if (!username || !password)
-    return res.status(400).json({ error: "username and password required" });
-  credentials.username = String(username);
-  credentials.password = String(password);
-  res.json({ ok: true });
-});
 
 // Consular Services CRUD (Firebase-auth protected)
 app.post("/api/consular-services", requireAnyAuth, async (req, res) => {

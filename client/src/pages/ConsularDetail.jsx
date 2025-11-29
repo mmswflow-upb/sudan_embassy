@@ -36,14 +36,14 @@ export default function ConsularDetail() {
     item.attachmentType ||
     (fileUrl.endsWith(".pdf") ? "pdf" : fileUrl ? "image" : null);
   return (
-    <main className="container mx-auto px-4 py-10">
-      <Link to="/consular-services" className="text-sudan-blue">
-        ← {t("pages.consular_services")}
+    <main className="container mx-auto px-4 py-6 md:py-10">
+      <Link to="/consular-services" className="text-sudan-blue text-sm md:text-base inline-flex items-center mb-3">
+        <i className="fa-solid fa-arrow-left me-2"></i> {t("pages.consular_services")}
       </Link>
-      <div className="bg-white rounded-lg shadow-sm p-6 mt-4">
-        <div className="flex items-center gap-3 mb-3">
-          <i className={`${item.icon} text-sudan-green`} />
-          <h1 className="text-2xl font-bold">{item.name}</h1>
+      <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 mt-2">
+        <div className="flex items-center gap-2 md:gap-3 mb-3">
+          <i className={`${item.icon} text-sudan-green text-lg md:text-xl`} />
+          <h1 className="text-xl md:text-2xl font-bold">{item.name}</h1>
         </div>
         {inferredType === "image" && fileUrl && (
           <img
@@ -57,7 +57,7 @@ export default function ConsularDetail() {
             <iframe
               title="file"
               src={`${fileUrl}#toolbar=1`}
-              className="w-full h-[480px] border rounded"
+              className="w-full h-[360px] md:h-[480px] border rounded"
             ></iframe>
           </div>
         )}
@@ -68,17 +68,17 @@ export default function ConsularDetail() {
             target="_blank"
             rel="noreferrer"
           >
-            <i className="fa-solid fa-download mr-2" /> {t("common.download")}{" "}
+            <i className="fa-solid fa-download me-2" /> {t("common.download")}{" "}
             {item.fileName || "file"}
           </a>
         )}
         <p className="text-gray-700 whitespace-pre-line mb-6">{item.details}</p>
 
-        <div className="border-t pt-6 mt-6">
-          <h2 className="text-xl font-semibold mb-3">
+        <div className="border-t pt-4 md:pt-6 mt-4 md:mt-6">
+          <h2 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">
             {t("forms.submit_filled")}
           </h2>
-          <p className="text-gray-600 mb-4">{t("forms.submit_help")}</p>
+          <p className="text-sm md:text-base text-gray-600 mb-3 md:mb-4">{t("forms.submit_help")}</p>
           <form
             onSubmit={async (e) => {
               e.preventDefault();

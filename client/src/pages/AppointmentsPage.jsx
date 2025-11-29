@@ -31,12 +31,12 @@ export default function AppointmentsPage() {
     }
   }
   return (
-    <main className="container mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-sudan-black mb-6">
+    <main className="container mx-auto px-4 py-6 md:py-10">
+      <h1 className="text-2xl md:text-3xl font-bold text-sudan-black mb-4 md:mb-6">
         {t("pages.book_appointment")}
       </h1>
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <p className="text-gray-700 mb-4">{t("pages.choose_service")}</p>
+      <div className="bg-white rounded-lg shadow-sm p-4 md:p-6">
+        <p className="text-sm md:text-base text-gray-700 mb-3 md:mb-4">{t("pages.choose_service")}</p>
         <form
           onSubmit={submit}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"

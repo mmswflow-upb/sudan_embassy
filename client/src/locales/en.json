@@ -45,8 +45,9 @@
     "embassy": "Embassy of Sudan",
     "quick_links": "Quick Links",
     "popular_services": "Popular Services",
+    "social": "Follow Us",
     "follow_us": "Follow Us",
-    "copyright": "© 2023 Embassy of the Republic of Sudan in Bucharest. All rights reserved.",
+    "copyright": "© 2025 Embassy of the Republic of Sudan in Bucharest. All rights reserved.",
     "quick": ["Home", "Consular Services", "Book Appointment", "News & Alerts", "Contact Us"],
     "popular": ["Passport Renewal", "Visa Applications", "Document Authentication", "National Number", "Emergency Travel Document"]
   },
@@ -136,8 +137,201 @@
     "opt_authentication": "Document Authentication",
     "opt_national_number": "National Number"
   },
-  "admin": { "login": "Admin Login", "dashboard": "Admin Dashboard", "logout": "Logout", "loading": "Loading..." },
-  "upload": { "drop_here": "Drop the file here...", "drag_or_click": "Drag & drop a file here, or click to select", "selected": "Selected", "no_preview": "No preview" }
+  "admin": {
+    "login": "Admin Login",
+    "dashboard": "Admin Dashboard",
+    "logout": "Logout",
+    "loading": "Loading...",
+    "tabs": {
+      "content_management": "Content Management",
+      "user_data": "User Data",
+      "configuration": "Configuration",
+      "services": "Services",
+      "news": "News",
+      "alerts": "Alerts",
+      "forms": "Forms",
+      "appointments": "Appointments",
+      "submissions": "Submissions",
+      "settings": "Settings"
+    },
+    "consular": {
+      "title": "Create Consular Service",
+      "list_title": "Services List",
+      "name": "Name",
+      "icon": "Icon (Font Awesome class)",
+      "details": "Details",
+      "attachment": "Attachment (image or PDF) (optional)",
+      "save": "Save",
+      "saving": "Saving...",
+      "saved": "Service saved",
+      "delete": "Delete",
+      "no_services": "No services yet."
+    },
+    "news": {
+      "title": "Create News",
+      "list_title": "News List",
+      "news_title": "Title",
+      "summary": "Summary",
+      "tag": "Tag",
+      "attachment": "Attachment (image or PDF)",
+      "publish": "Publish",
+      "publishing": "Publishing...",
+      "published": "News published",
+      "delete": "Delete",
+      "no_news": "No news yet."
+    },
+    "alerts": {
+      "title": "Create Alert",
+      "list_title": "Alerts List",
+      "message": "Message",
+      "level": "Level",
+      "active": "Active",
+      "attachment": "Attachment (optional – image or PDF)",
+      "create": "Create Alert",
+      "created": "Alert created",
+      "delete": "Delete",
+      "no_alerts": "No alerts yet."
+    },
+    "forms": {
+      "title": "Upload Form",
+      "list_title": "Forms",
+      "form_title": "Title",
+      "description": "Description",
+      "pdf": "PDF",
+      "save": "Save",
+      "uploaded": "Form uploaded",
+      "select_pdf": "Select a PDF file",
+      "download": "Download",
+      "delete": "Delete",
+      "no_forms": "No forms yet."
+    },
+    "appointments": {
+      "title": "Appointments",
+      "service": "Service",
+      "status": "Status",
+      "approve": "Approve",
+      "reject": "Reject",
+      "delete": "Delete",
+      "no_appointments": "No appointments yet."
+    },
+    "submissions": {
+      "title": "Public Submissions",
+      "filter": "Filter",
+      "all_types": "All types",
+      "consular": "Consular",
+      "forms": "Forms",
+      "notes": "Notes",
+      "view_file": "View file",
+      "mark_done": "Mark Done",
+      "reject": "Reject",
+      "no_submissions": "No submissions yet."
+    },
+    "settings": {
+      "title": "Site Settings",
+      "header_section": "Header",
+      "phone": "Phone",
+      "email": "Email",
+      "receive_email": "Receive contact messages at",
+      "address": "Address",
+      "hero_section": "Hero",
+      "hero_title": "Title",
+      "hero_subtitle": "Subtitle",
+      "hero_cta1": "CTA 1",
+      "hero_cta2": "CTA 2",
+      "status_bar": "Status Bar",
+      "status": "Status",
+      "holiday": "Holiday",
+      "next_appointment": "Next Appointment",
+      "emergency_section": "Emergency",
+      "emergency_phone": "Phone",
+      "emergency_note": "Note",
+      "hours_section": "Hours",
+      "mon_thu": "Mon-Thu",
+      "fri": "Fri",
+      "contacts_section": "Contact Lines (icon class + text)",
+      "remove": "Remove",
+      "add_line": "+ Add line",
+      "map_section": "Map",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "place_link": "Place Link",
+      "promo_section": "Promo Slides",
+      "promo_title": "Title",
+      "promo_cta": "CTA",
+      "promo_subtitle": "Subtitle",
+      "promo_link": "Link",
+      "promo_image": "Image (URL or /images/..)",
+      "add_slide": "+ Add slide",
+      "save_settings": "Save Settings",
+      "saved_settings": "Saved settings"
+    },
+    "i18n": {
+      "romanian": "Romanian",
+      "arabic": "Arabic",
+      "name_ro": "Name (ro)",
+      "name_ar": "Name (ar)",
+      "details_ro": "Details (ro)",
+      "details_ar": "Details (ar)",
+      "title_ro": "Title (ro)",
+      "title_ar": "Title (ar)",
+      "summary_ro": "Summary (ro)",
+      "summary_ar": "Summary (ar)",
+      "tag_ro": "Tag (ro)",
+      "tag_ar": "Tag (ar)",
+      "message_ro": "Message (ro)",
+      "message_ar": "Message (ar)",
+      "description_ro": "Description (ro)",
+      "description_ar": "Description (ar)"
+    },
+    "common": {
+      "upload_progress": "Upload: {{progress}}%",
+      "email": "Email",
+      "password": "Password",
+      "login": "Login",
+      "login_failed": "Login failed. Check email/password and enable Email/Password in Firebase Auth."
+    }
+  },
+  "upload": { "drop_here": "Drop the file here...", "drag_or_click": "Drag & drop a file here, or click to select", "selected": "Selected", "no_preview": "No preview" },
+  "settings": {
+    "header": {
+      "phone": "+40 21 123 4567",
+      "email": "info@sudanembassy.ro"
+    },
+    "statusBar": {
+      "status": "Open today: 9:00 AM - 4:00 PM",
+      "holiday": "today",
+      "nextAppointment": "tomorrow"
+    },
+    "hours": {
+      "monThu": "9:00 AM - 4:00 PM",
+      "fri": "9:00 AM - 1:00 PM"
+    },
+    "contacts": [
+      { "icon": "fa-solid fa-location-dot", "text": "123 Diplomatic Street, Sector 1, Bucharest, Romania" },
+      { "icon": "fa-solid fa-phone", "text": "+40 21 123 4567" },
+      { "icon": "fa-solid fa-envelope", "text": "info@sudanembassy.ro" }
+    ],
+    "emergency": {
+      "phone": "+40 722 123 456",
+      "note": "This number is for genuine emergencies only"
+    },
+    "promoSlides": [
+      {
+        "title": "Hidden Treasures Cultural Tourism",
+        "subtitle": "A Group of almost 200 ancient pyramids, called the Meroë pyramids, after the Meroitic Kingdom that reigned over the area for over 900 years. They were built over 2,000 years ago.",
+        "cta": "Click Here",
+        "href": "https://artsexperiments.withgoogle.com/meroe/",
+        "image": "/images/1ss.jpg"
+      },
+      {
+        "title": "Using the Sudanese Police Electronic Reporting Platform",
+        "subtitle": "You can now use the electronic reporting platform belonging to the Sudanese Police Forces to report cases of assault on the self, or property, vehicles, or personal possessions.",
+        "cta": "Click Here",
+        "href": "https://www.sudanpolice.net/",
+        "image": "/images/2ss.jpg"
+      }
+    ]
+  }
 }
 
 

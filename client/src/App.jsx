@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import Header from './components/Header'
 import AlertBar from './components/AlertBar'
 import StatusBar from './components/StatusBar'
@@ -30,11 +31,16 @@ import AlertsPage from './pages/AlertsPage'
 
 function App() {
   const location = useLocation()
+  
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
+  
   return (
-    <div className="bg-gray-100 min-h-dvh">
+    <div className="bg-gray-100 min-h-screen flex flex-col">
       <Header />
       <AlertBar />
-      <div key={location.pathname} className="page-fade-enter page-fade-enter-active">
+      <div key={location.pathname} className="page-fade-enter page-fade-enter-active flex-grow">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/consular-services" element={<ConsularPage />} />
@@ -55,8 +61,6 @@ function App() {
       </Routes>
       </div>
       <Footer />
-      <AppointCTA />
-      <HelpButton />
     </div>
   )
 }

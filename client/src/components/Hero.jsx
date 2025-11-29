@@ -40,27 +40,27 @@ export default function Hero() {
       <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-sudan-green/40 rounded-full bg-blob" />
       <div className="absolute inset-0 bg-black opacity-30" />
       <div className="relative z-10 flex h-full items-stretch">
-        <div className="w-full md:w-1/2 p-4 md:p-8 flex flex-col justify-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+        <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-3 md:mb-4 leading-tight">
             {hero.title || t("hero.title")}
           </h1>
-          <h2 className="text-xl md:text-2xl text-white/90 mb-6">
+          <h2 className="text-lg md:text-2xl text-white/90 mb-4 md:mb-6">
             {hero.subtitle || t("hero.subtitle")}
           </h2>
-          <p className="text-white mb-8">{t("hero.paragraph")}</p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <p className="text-sm md:text-base text-white mb-6 md:mb-8">{t("hero.paragraph")}</p>
+          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4">
             <Link
               to="/appointments"
-              className="ripple bg-white text-sudan-green hover:bg-gray-100 px-6 py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center"
+              className="ripple bg-white text-sudan-green hover:bg-gray-100 px-5 py-2.5 md:px-6 md:py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center text-sm md:text-base"
             >
-              <i className="fa-solid fa-calendar-check mr-2" />
+              <i className="fa-solid fa-calendar-check me-2" />
               {hero.cta1 || t("hero.cta1")}
             </Link>
             <Link
               to="/consular-services"
-              className="ripple bg-sudan-black text-white hover:bg-gray-800 px-6 py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center"
+              className="ripple bg-sudan-black text-white hover:bg-gray-800 px-5 py-2.5 md:px-6 md:py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center text-sm md:text-base"
             >
-              <i className="fa-solid fa-passport mr-2" />
+              <i className="fa-solid fa-passport me-2" />
               {hero.cta2 || t("hero.cta2")}
             </Link>
           </div>

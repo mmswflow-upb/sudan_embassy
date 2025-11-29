@@ -21,33 +21,33 @@ export default function FormsPage() {
       .then(setItems);
   }, [i18n.resolvedLanguage]);
   return (
-    <main className="container mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-sudan-black mb-6">
+    <main className="container mx-auto px-4 py-6 md:py-10">
+      <h1 className="text-2xl md:text-3xl font-bold text-sudan-black mb-4 md:mb-6">
         {t("forms.title")}
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         {items.map((f) => (
           <div
             key={f.id}
-            className="border rounded p-4 bg-white flex items-start gap-3"
+            className="border rounded p-3 md:p-4 bg-white flex items-start gap-2 md:gap-3"
           >
-            <div className="bg-sudan-green text-white rounded-full h-10 w-10 flex items-center justify-center">
-              <i className="fa-solid fa-file-pdf" />
+            <div className="bg-sudan-green text-white rounded-full h-8 w-8 md:h-10 md:w-10 flex items-center justify-center flex-shrink-0">
+              <i className="fa-solid fa-file-pdf text-sm md:text-base" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-medium">{f.title}</h3>
-              <p className="text-sm text-gray-600">{f.description}</p>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-medium text-sm md:text-base">{f.title}</h3>
+              <p className="text-xs md:text-sm text-gray-600">{f.description}</p>
               <a
                 href={f.fileUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sudan-blue hover:underline mt-1 inline-flex items-center"
+                className="text-sudan-blue hover:underline mt-1 inline-flex items-center text-xs md:text-sm"
               >
-                <i className="fa-solid fa-download mr-2" />{" "}
+                <i className="fa-solid fa-download me-1 md:me-2" />{" "}
                 {t("common.download")} {f.fileName || ""}
               </a>
               <button
-                className="ml-3 text-sudan-green underline"
+                className="ml-2 md:ml-3 text-sudan-green underline text-xs md:text-sm"
                 onClick={() => {
                   setSelectedFormId(f.id);
                   document

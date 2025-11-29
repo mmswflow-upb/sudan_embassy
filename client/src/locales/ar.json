@@ -44,9 +44,10 @@
   "footer": {
     "embassy": "سفارة السودان",
     "quick_links": "روابط سريعة",
-    "popular_services": "خدمات شائعة",
+    "popular_services": "الخدمات الشعبية",
+    "social": "تابعنا",
     "follow_us": "تابعنا",
-    "copyright": "© 2023 سفارة جمهورية السودان في بوخارست. جميع الحقوق محفوظة.",
+    "copyright": "© 2025 سفارة جمهورية السودان في بوخارست. جميع الحقوق محفوظة.",
     "quick": ["الرئيسية","الخدمات القنصلية","احجز موعدًا","الأخبار والتنبيهات","اتصل بنا"],
     "popular": ["تجديد الجواز","طلبات التأشيرة","توثيق المستندات","الرقم الوطني","وثيقة سفر اضطرارية"]
   },
@@ -147,15 +148,203 @@
   },
   "admin": {
     "login": "تسجيل دخول المسؤول",
-    "dashboard": "لوحة إدارة",
+    "dashboard": "لوحة الإدارة",
     "logout": "تسجيل الخروج",
-    "loading": "جارٍ التحميل..."
+    "loading": "جارٍ التحميل...",
+    "tabs": {
+      "content_management": "إدارة المحتوى",
+      "user_data": "بيانات المستخدمين",
+      "configuration": "التكوين",
+      "services": "الخدمات",
+      "news": "الأخبار",
+      "alerts": "التنبيهات",
+      "forms": "النماذج",
+      "appointments": "المواعيد",
+      "submissions": "الطلبات",
+      "settings": "الإعدادات"
+    },
+    "consular": {
+      "title": "إنشاء خدمة قنصلية",
+      "list_title": "قائمة الخدمات",
+      "name": "الاسم",
+      "icon": "الأيقونة (فئة Font Awesome)",
+      "details": "التفاصيل",
+      "attachment": "مرفق (صورة أو PDF) (اختياري)",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ...",
+      "saved": "تم حفظ الخدمة",
+      "delete": "حذف",
+      "no_services": "لا توجد خدمات حتى الآن."
+    },
+    "news": {
+      "title": "إنشاء خبر",
+      "list_title": "قائمة الأخبار",
+      "news_title": "العنوان",
+      "summary": "الملخص",
+      "tag": "الوسم",
+      "attachment": "مرفق (صورة أو PDF)",
+      "publish": "نشر",
+      "publishing": "جارٍ النشر...",
+      "published": "تم نشر الخبر",
+      "delete": "حذف",
+      "no_news": "لا توجد أخبار حتى الآن."
+    },
+    "alerts": {
+      "title": "إنشاء تنبيه",
+      "list_title": "قائمة التنبيهات",
+      "message": "الرسالة",
+      "level": "المستوى",
+      "active": "نشط",
+      "attachment": "مرفق (اختياري – صورة أو PDF)",
+      "create": "إنشاء تنبيه",
+      "created": "تم إنشاء التنبيه",
+      "delete": "حذف",
+      "no_alerts": "لا توجد تنبيهات حتى الآن."
+    },
+    "forms": {
+      "title": "رفع نموذج",
+      "list_title": "النماذج",
+      "form_title": "العنوان",
+      "description": "الوصف",
+      "pdf": "PDF",
+      "save": "حفظ",
+      "uploaded": "تم رفع النموذج",
+      "select_pdf": "اختر ملف PDF",
+      "download": "تنزيل",
+      "delete": "حذف",
+      "no_forms": "لا توجد نماذج حتى الآن."
+    },
+    "appointments": {
+      "title": "المواعيد",
+      "service": "الخدمة",
+      "status": "الحالة",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "delete": "حذف",
+      "no_appointments": "لا توجد مواعيد حتى الآن."
+    },
+    "submissions": {
+      "title": "الطلبات العامة",
+      "filter": "تصفية",
+      "all_types": "جميع الأنواع",
+      "consular": "قنصلي",
+      "forms": "نماذج",
+      "notes": "ملاحظات",
+      "view_file": "عرض الملف",
+      "mark_done": "وضع علامة منتهي",
+      "reject": "رفض",
+      "no_submissions": "لا توجد طلبات حتى الآن."
+    },
+    "settings": {
+      "title": "إعدادات الموقع",
+      "header_section": "الرأس",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "receive_email": "استقبال رسائل الاتصال على",
+      "address": "العنوان",
+      "hero_section": "البانر الرئيسي",
+      "hero_title": "العنوان",
+      "hero_subtitle": "العنوان الفرعي",
+      "hero_cta1": "زر الدعوة 1",
+      "hero_cta2": "زر الدعوة 2",
+      "status_bar": "شريط الحالة",
+      "status": "الحالة",
+      "holiday": "عطلة",
+      "next_appointment": "الموعد التالي",
+      "emergency_section": "الطوارئ",
+      "emergency_phone": "الهاتف",
+      "emergency_note": "ملاحظة",
+      "hours_section": "ساعات العمل",
+      "mon_thu": "الإثنين-الخميس",
+      "fri": "الجمعة",
+      "contacts_section": "خطوط الاتصال (فئة الأيقونة + النص)",
+      "remove": "إزالة",
+      "add_line": "+ إضافة سطر",
+      "map_section": "الخريطة",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "place_link": "رابط المكان",
+      "promo_section": "الشرائح الترويجية",
+      "promo_title": "العنوان",
+      "promo_cta": "زر الدعوة",
+      "promo_subtitle": "العنوان الفرعي",
+      "promo_link": "الرابط",
+      "promo_image": "الصورة (URL أو /images/..)",
+      "add_slide": "+ إضافة شريحة",
+      "save_settings": "حفظ الإعدادات",
+      "saved_settings": "تم حفظ الإعدادات"
+    },
+    "i18n": {
+      "romanian": "رومانية",
+      "arabic": "عربية",
+      "name_ro": "الاسم (ro)",
+      "name_ar": "الاسم (ar)",
+      "details_ro": "التفاصيل (ro)",
+      "details_ar": "التفاصيل (ar)",
+      "title_ro": "العنوان (ro)",
+      "title_ar": "العنوان (ar)",
+      "summary_ro": "الملخص (ro)",
+      "summary_ar": "الملخص (ar)",
+      "tag_ro": "الوسم (ro)",
+      "tag_ar": "الوسم (ar)",
+      "message_ro": "الرسالة (ro)",
+      "message_ar": "الرسالة (ar)",
+      "description_ro": "الوصف (ro)",
+      "description_ar": "الوصف (ar)"
+    },
+    "common": {
+      "upload_progress": "الرفع: {{progress}}%",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "login": "تسجيل الدخول",
+      "login_failed": "فشل تسجيل الدخول. تحقق من البريد الإلكتروني/كلمة المرور وقم بتفعيل البريد الإلكتروني/كلمة المرور في Firebase Auth."
+    }
   },
   "upload": {
     "drop_here": "أسقط الملف هنا...",
     "drag_or_click": "اسحب وأفلت الملف هنا، أو انقر للاختيار",
     "selected": "المحدد",
     "no_preview": "لا توجد معاينة"
+  },
+  "settings": {
+    "header": {
+      "phone": "+40 21 123 4567",
+      "email": "info@sudanembassy.ro"
+    },
+    "statusBar": {
+      "status": "مفتوح اليوم: 9:00 صباحًا - 4:00 مساءً",
+      "holiday": "اليوم",
+      "nextAppointment": "غدًا"
+    },
+    "hours": {
+      "monThu": "9:00 صباحًا - 4:00 مساءً",
+      "fri": "9:00 صباحًا - 1:00 مساءً"
+    },
+    "contacts": [
+      { "icon": "fa-solid fa-location-dot", "text": "شارع الدبلوماسية 123، القطاع 1، بوخارست، رومانيا" },
+      { "icon": "fa-solid fa-phone", "text": "+40 21 123 4567" },
+      { "icon": "fa-solid fa-envelope", "text": "info@sudanembassy.ro" }
+    ],
+    "emergency": {
+      "phone": "+40 722 123 456",
+      "note": "هذا الرقم للحالات الطارئة الحقيقية فقط"
+    },
+    "promoSlides": [
+      {
+        "title": "كنوز خفية – سياحة ثقافية",
+        "subtitle": "مجموعة من نحو 200 هرم قديم تُعرف بأهرامات مروي، نسبة إلى المملكة المروية التي حكمت المنطقة لأكثر من 900 عام. بُنيت قبل أكثر من 2000 عام.",
+        "cta": "اضغط هنا",
+        "href": "https://artsexperiments.withgoogle.com/meroe/",
+        "image": "/images/1ss.jpg"
+      },
+      {
+        "title": "استخدام منصة البلاغات الإلكترونية لشرطة السودان",
+        "subtitle": "يمكنك الآن استخدام المنصة الإلكترونية التابعة لشرطة السودان للإبلاغ عن حالات الاعتداء على النفس أو الممتلكات أو المركبات أو المقتنيات الشخصية.",
+        "cta": "اضغط هنا",
+        "href": "https://www.sudanpolice.net/",
+        "image": "/images/2ss.jpg"
+      }
+    ]
   }
 }
 

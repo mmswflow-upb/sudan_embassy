@@ -21,7 +21,6 @@ EXPOSE 8080
 ENV PORT=8080
 ENV NODE_ENV=production
 ENV GOOGLE_APPLICATION_CREDENTIALS="./credentials/firebase-sa-key.json"
-ENV FIREBASE_BUCKET="gs://sudan-embassy.firebasestorage.app"
 ENV UPLOAD_DIR="./uploads"
 
 # Start the application

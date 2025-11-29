@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getApiUrl } from "../config.js";
 
 function StatusCard({ color, icon, title, subtitle }) {
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 flex items-center">
-      <div className={`${color} text-white rounded-full p-3 mr-4`}>
+      <div className={`${color} text-white rounded-full p-3 me-4`}>
         <i className={icon} />
       </div>
       <div>
@@ -18,29 +16,28 @@ function StatusCard({ color, icon, title, subtitle }) {
 
 export default function StatusBar() {
   const { t } = useTranslation();
-  const [cards, setCards] = useState([
-    { color: "bg-sudan-green", icon: "fa-solid fa-clock", subtitle: "" },
-    { color: "bg-sudan-blue", icon: "fa-solid fa-bell", subtitle: "—" },
+
+  const cards = [
+    {
+      color: "bg-sudan-green",
+      icon: "fa-solid fa-clock",
+      title: t("status.embassy_status"),
+      subtitle: t("settings.statusBar.status")
+    },
+    {
+      color: "bg-sudan-blue",
+      icon: "fa-solid fa-bell",
+      title: t("status.holiday_notice"),
+      subtitle: t("settings.statusBar.holiday")
+    },
     {
       color: "bg-sudan-black",
       icon: "fa-solid fa-calendar-alt",
-      subtitle: "—",
+      title: t("status.next_available"),
+      subtitle: t("settings.statusBar.nextAppointment")
     },
-  ]);
-  useEffect(() => {
-    fetch(getApiUrl("/api/settings"))
-      .then((r) => r.json())
-      .then((s) => {
-        if (!s) return;
-        const updated = [...cards];
-        if (s.statusBar?.status) updated[0].subtitle = s.statusBar.status;
-        if (s.statusBar?.holiday) updated[1].subtitle = s.statusBar.holiday;
-        if (s.statusBar?.nextAppointment)
-          updated[2].subtitle = s.statusBar.nextAppointment;
-        setCards(updated);
-      })
-      .catch(() => {});
-  }, []);
+  ];
+
   return (
     <div
       id="status-bar"
@@ -49,16 +46,7 @@ export default function StatusBar() {
     >
       {cards.map((c, i) => (
         <div key={i} data-aos="zoom-in" data-aos-delay={i * 70}>
-          <StatusCard
-            {...c}
-            title={
-              i === 0
-                ? t("status.embassy_status")
-                : i === 1
-                ? t("status.holiday_notice")
-                : t("status.next_available")
-            }
-          />
+          <StatusCard {...c} />
         </div>
       ))}
     </div>

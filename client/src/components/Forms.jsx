@@ -8,10 +8,10 @@ function FormRow({ color, title, meta, url }) {
       href={url}
       target="_blank"
       rel="noreferrer"
-      className="border border-gray-200 rounded-md p-4 flex items-center hover:bg-gray-50"
+      className="border border-gray-200 rounded-md p-3 md:p-4 flex items-center hover:bg-gray-50"
     >
       <div
-        className={`${color} text-white rounded-full h-10 w-10 flex items-center justify-center mr-4`}
+        className={`${color} text-white rounded-full h-10 w-10 flex items-center justify-center me-4`}
       >
         <i className="fa-solid fa-file-pdf" />
       </div>
@@ -48,8 +48,8 @@ export default function Forms({ limit }) {
       <h2 className="text-2xl font-bold text-sudan-black mb-4 sudan-section-title">
         {t("forms.title")}
       </h2>
-      <div className="card p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="card p-4 md:p-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           {(typeof limit === "number" ? data.slice(0, limit) : data).map(
             (r) => (
               <FormRow

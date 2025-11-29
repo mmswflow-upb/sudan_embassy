@@ -33,14 +33,14 @@ function NewsCard({
           to={`/news/${id}`}
           className="text-sudan-blue hover:underline flex items-center cursor-pointer"
         >
-          {t("news.read_more")} <i className="fa-solid fa-arrow-right ml-2" />
+          {t("news.read_more")} <i className="fa-solid fa-arrow-right ms-2" />
         </Link>
       </div>
     </div>
   );
 }
 
-export default function News({ limit }) {
+export default function News({ limit, showHeader = true }) {
   const { t, i18n } = useTranslation();
   const [posts, setPosts] = useState([]);
   useEffect(() => {
@@ -69,18 +69,20 @@ export default function News({ limit }) {
   const list = typeof limit === "number" ? posts.slice(0, limit) : posts;
   return (
     <section id="news-section" data-aos="fade-up">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-        <h2 className="text-2xl font-bold text-sudan-black sudan-section-title">
-          {t("news.title")}
-        </h2>
-        <a
-          href="/news"
-          className="text-sudan-blue hover:underline cursor-pointer"
-        >
-          {t("common.view_all")}
-        </a>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-8">
+      {showHeader && (
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+          <h2 className="text-2xl font-bold text-sudan-black sudan-section-title">
+            {t("news.title")}
+          </h2>
+          <a
+            href="/news"
+            className="text-sudan-blue hover:underline cursor-pointer"
+          >
+            {t("common.view_all")}
+          </a>
+        </div>
+      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {list.map((p, idx) => (
           <div
             key={p.id || p.title}

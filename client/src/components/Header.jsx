@@ -1,30 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { getApiUrl } from "../config.js";
 
 export default function Header() {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const aboutRef = useRef(null);
-  const [contact, setContact] = useState({
-    phone: "+40 21 123 4567",
-    email: "info@sudanembassy.ro",
-  });
-  useEffect(() => {
-    fetch(getApiUrl("/api/settings"))
-      .then((r) => r.json())
-      .then((s) => {
-        if (s?.header)
-          setContact({
-            phone: s.header.phone || contact.phone,
-            email: s.header.email || contact.email,
-          });
-      })
-      .catch(() => {});
-  }, []);
+  const mobileMenuRef = useRef(null);
+
+  // Get contact info from locale translations
+  const contact = t("settings.header", { returnObjects: true });
+  
+  // Check if current page is an About page
+  const isAboutPage = location.pathname.startsWith("/about");
+  
+  // Close about dropdown when clicking outside
   useEffect(() => {
     function onDocClick(e) {
       if (!aboutRef.current) return;
@@ -33,8 +26,28 @@ export default function Header() {
     document.addEventListener("click", onDocClick);
     return () => document.removeEventListener("click", onDocClick);
   }, []);
+  
+  // Close mobile menu when clicking outside
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    function onDocClick(e) {
+      if (!mobileMenuRef.current) return;
+      if (!mobileMenuRef.current.contains(e.target) && !e.target.closest('button[aria-label="Toggle menu"]')) {
+        setOpen(false);
+      }
+    }
+    if (open) {
+      document.addEventListener("click", onDocClick);
+      return () => document.removeEventListener("click", onDocClick);
+    }
+  }, [open]);
+  
+  // Handle scroll - set scrolled state and close menus
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      setOpen(false);
+      setAboutOpen(false);
+    };
     window.addEventListener("scroll", onScroll);
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
@@ -55,44 +68,46 @@ export default function Header() {
               className="flex items-center hover:text-gray-200"
             >
               <i className="fa-solid fa-phone w-4" />
-              <span className="ml-2">{contact.phone}</span>
+              <span className="ms-2">{contact.phone}</span>
             </a>
             <a
               href={`mailto:${contact.email}`}
               className="flex items-center hover:text-gray-200"
             >
               <i className="fa-solid fa-envelope w-4" />
-              <span className="ml-2 truncate max-w-[180px] md:max-w-none">
+              <span className="ms-2 truncate max-w-[180px] md:max-w-none">
                 {contact.email}
               </span>
             </a>
           </div>
-          <div className="hidden md:flex items-center gap-2 md:gap-3 w-full md:w-auto justify-between md:justify-end">
-            <button
-              onClick={() => i18n.changeLanguage("en")}
-              className={`px-2 py-1 rounded-full text-xs bg-white/10 hover:bg-white/20 ${
-                i18n.resolvedLanguage === "en" ? "ring-2 ring-sudan-red" : ""
-              }`}
-            >
-              {t("common.language.en")}
-            </button>
-            <button
-              onClick={() => i18n.changeLanguage("ro")}
-              className={`px-2 py-1 rounded-full text-xs bg-white/10 hover:bg-white/20 ${
-                i18n.resolvedLanguage === "ro" ? "ring-2 ring-sudan-red" : ""
-              }`}
-            >
-              {t("common.language.ro")}
-            </button>
-            <button
-              onClick={() => i18n.changeLanguage("ar")}
-              className={`px-2 py-1 rounded-full text-xs bg-white/10 hover:bg-white/20 font-arabic ${
-                i18n.resolvedLanguage === "ar" ? "ring-2 ring-sudan-red" : ""
-              }`}
-            >
-              {t("common.language.ar")}
-            </button>
-            <div className="flex items-center gap-2 ml-4">
+          <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto justify-between md:justify-end">
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <button
+                onClick={() => i18n.changeLanguage("en")}
+                className={`px-2 py-1 rounded-full text-xs bg-white/10 hover:bg-white/20 ${
+                  i18n.resolvedLanguage === "en" ? "ring-2 ring-sudan-red" : ""
+                }`}
+              >
+                {t("common.language.en")}
+              </button>
+              <button
+                onClick={() => i18n.changeLanguage("ro")}
+                className={`px-2 py-1 rounded-full text-xs bg-white/10 hover:bg-white/20 ${
+                  i18n.resolvedLanguage === "ro" ? "ring-2 ring-sudan-red" : ""
+                }`}
+              >
+                {t("common.language.ro")}
+              </button>
+              <button
+                onClick={() => i18n.changeLanguage("ar")}
+                className={`px-2 py-1 rounded-full text-xs bg-white/10 hover:bg-white/20 font-arabic ${
+                  i18n.resolvedLanguage === "ar" ? "ring-2 ring-sudan-red" : ""
+                }`}
+              >
+                {t("common.language.ar")}
+              </button>
+            </div>
+            <div className="hidden md:flex items-center gap-2 ml-4">
               <span className="hover:text-gray-200 cursor-pointer">
                 <i className="fa-brands fa-facebook-f" />
               </span>
@@ -106,25 +121,34 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="flex justify-between items-center py-3 px-3 md:px-4">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-white flex items-center justify-center text-sudan-green">
-              <i className="fa-solid fa-landmark text-lg" />
+        <div className="flex justify-between items-center py-2 md:py-3 px-3 md:px-4">
+          <Link to="/" className="flex items-center gap-2 md:gap-3 hover:opacity-90 transition-opacity">
+            <div className="h-10 w-14 md:h-12 md:w-16 rounded overflow-hidden shadow-md relative">
+              {/* Sudan Flag */}
+              <div className="absolute inset-0 flex flex-col">
+                <div className="h-1/3 bg-[#D21034]"></div>
+                <div className="h-1/3 bg-white"></div>
+                <div className="h-1/3 bg-black"></div>
+              </div>
+              <div className="absolute inset-y-0 left-0 w-0 h-0 border-t-[24px] border-t-transparent border-l-[28px] border-l-[#007229] border-b-[24px] border-b-transparent"></div>
             </div>
             <div>
-              <div className="font-medium text-white text-lg">
+              <div className="font-medium text-white text-sm md:text-lg">
                 {t("footer.embassy")}
               </div>
-              <div className="text-xs text-white/80">{t("hero.subtitle")}</div>
+              <div className="text-[10px] md:text-xs text-white/80">{t("hero.subtitle")}</div>
             </div>
-          </div>
+          </Link>
 
           <nav className="hidden md:flex">
             <ul className="flex gap-2 md:gap-3">
               <li className="relative group">
                 <NavLink
                   to="/"
-                  className="px-3 py-2 rounded-md flex items-center font-medium cursor-pointer hover:bg-white/10 transition-colors"
+                  onClick={() => setAboutOpen(false)}
+                  className={({ isActive }) => `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
+                    isActive ? "bg-white/20 text-white" : "hover:bg-white/10"
+                  }`}
                 >
                   {t("nav.home")}
                 </NavLink>
@@ -132,7 +156,10 @@ export default function Header() {
               <li className="relative group">
                 <NavLink
                   to="/consular-services"
-                  className="px-3 py-2 rounded-md flex items-center font-medium cursor-pointer hover:bg-white/10 transition-colors"
+                  onClick={() => setAboutOpen(false)}
+                  className={({ isActive }) => `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
+                    isActive ? "bg-white/20 text-white" : "hover:bg-white/10"
+                  }`}
                 >
                   {t("nav.consular")}
                 </NavLink>
@@ -140,7 +167,10 @@ export default function Header() {
               <li className="relative group">
                 <NavLink
                   to="/appointments"
-                  className="px-3 py-2 rounded-md flex items-center font-medium cursor-pointer hover:bg-white/10 transition-colors"
+                  onClick={() => setAboutOpen(false)}
+                  className={({ isActive }) => `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
+                    isActive ? "bg-white/20 text-white" : "hover:bg-white/10"
+                  }`}
                 >
                   {t("nav.appointments")}
                 </NavLink>
@@ -148,7 +178,10 @@ export default function Header() {
               <li className="relative group">
                 <NavLink
                   to="/news"
-                  className="px-3 py-2 rounded-md flex items-center font-medium cursor-pointer hover:bg-white/10 transition-colors"
+                  onClick={() => setAboutOpen(false)}
+                  className={({ isActive }) => `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
+                    isActive ? "bg-white/20 text-white" : "hover:bg-white/10"
+                  }`}
                 >
                   {t("nav.news")}
                 </NavLink>
@@ -156,7 +189,9 @@ export default function Header() {
               <li className="relative" ref={aboutRef}>
                 <button
                   type="button"
-                  className="px-3 py-2 rounded-md flex items-center font-medium cursor-pointer select-none hover:bg-white/10 transition-colors"
+                  className={`px-3 py-2 rounded-md flex items-center font-medium cursor-pointer select-none transition-colors ${
+                    isAboutPage ? "bg-white/20 text-white" : "hover:bg-white/10"
+                  }`}
                   onClick={() => setAboutOpen((v) => !v)}
                 >
                   <span>{t("nav.about")}</span>
@@ -223,7 +258,10 @@ export default function Header() {
               <li className="relative group">
                 <NavLink
                   to="/contact"
-                  className="px-3 py-2 rounded-md flex items-center font-medium cursor-pointer hover:bg-white/10 transition-colors"
+                  onClick={() => setAboutOpen(false)}
+                  className={({ isActive }) => `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
+                    isActive ? "bg-white/20 text-white" : "hover:bg-white/10"
+                  }`}
                 >
                   {t("nav.contact")}
                 </NavLink>
@@ -236,7 +274,7 @@ export default function Header() {
               to="/appointments"
               className="bg-sudan-black hover:bg-gray-800 text-white px-3 md:px-4 py-2 rounded-lg shadow-lg flex items-center w-full md:w-auto text-sm md:text-base transition-transform hover:-translate-y-0.5"
             >
-              <i className="fa-solid fa-calendar-check mr-2" />
+              <i className="fa-solid fa-calendar-check me-2" />
               {t("nav.book_appointment")}
             </Link>
             <button
@@ -249,13 +287,13 @@ export default function Header() {
           </div>
         </div>
         {open && (
-          <div className="md:hidden px-3 md:px-4 pb-4">
+          <div ref={mobileMenuRef} className="md:hidden px-3 md:px-4 pb-4">
             <ul className="space-y-2 text-sm">
               <li>
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/"
-                  className="block py-2"
+                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                 >
                   {t("nav.home")}
                 </NavLink>
@@ -264,7 +302,7 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/consular-services"
-                  className="block py-2"
+                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                 >
                   {t("nav.consular")}
                 </NavLink>
@@ -273,7 +311,7 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/appointments"
-                  className="block py-2"
+                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                 >
                   {t("nav.appointments")}
                 </NavLink>
@@ -282,7 +320,7 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/news"
-                  className="block py-2"
+                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                 >
                   {t("nav.news")}
                 </NavLink>
@@ -297,7 +335,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about-sudan"
-                        className="block"
+                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                       >
                         {t("nav.overview")}
                       </NavLink>
@@ -306,7 +344,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/in-brief"
-                        className="block"
+                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                       >
                         {t("nav.about_brief")}
                       </NavLink>
@@ -315,7 +353,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/travel"
-                        className="block"
+                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                       >
                         {t("nav.about_travel")}
                       </NavLink>
@@ -324,7 +362,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/culture"
-                        className="block"
+                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                       >
                         {t("nav.about_culture")}
                       </NavLink>
@@ -333,7 +371,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/tourism"
-                        className="block"
+                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                       >
                         {t("nav.about_tourism")}
                       </NavLink>
@@ -342,7 +380,7 @@ export default function Header() {
                       <NavLink
                         onClick={() => setOpen(false)}
                         to="/about/visiting"
-                        className="block"
+                        className={({ isActive }) => `block transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                       >
                         {t("nav.about_visiting")}
                       </NavLink>
@@ -354,7 +392,7 @@ export default function Header() {
                 <NavLink
                   onClick={() => setOpen(false)}
                   to="/contact"
-                  className="block py-2"
+                  className={({ isActive }) => `block py-2 transition-colors ${isActive ? "text-sudan-green font-medium" : ""}`}
                 >
                   {t("nav.contact")}
                 </NavLink>

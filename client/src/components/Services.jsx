@@ -18,7 +18,7 @@ function ServiceCard({ color, icon, title, desc }) {
         className="text-sudan-blue hover:underline flex items-center cursor-pointer"
       >
         {t("common.learn_more")}
-        <i className="fa-solid fa-arrow-right ml-2" />
+        <i className="fa-solid fa-arrow-right ms-2" />
       </a>
     </div>
   );
@@ -65,12 +65,12 @@ export default function Services({ limit, carousel = false }) {
             {t("common.view_all")}
           </a>
         </div>
-        <div className="overflow-x-auto -mx-4 px-4 snap-x">
-          <div className="grid grid-flow-col auto-cols-[minmax(300px,1fr)] gap-4 md:gap-6 mb-4">
+        <div className="overflow-x-auto -mx-4 px-4 snap-x snap-mandatory scrollbar-hide">
+          <div className="grid grid-flow-col auto-cols-[minmax(280px,1fr)] md:auto-cols-[minmax(300px,1fr)] gap-4 md:gap-6 mb-4">
             {list.map((s, idx) => (
               <div
                 key={s.title}
-                className="min-w-[300px] snap-start"
+                className="min-w-[280px] md:min-w-[300px] snap-start"
                 data-aos="fade-up"
                 data-aos-delay={idx * 80}
               >

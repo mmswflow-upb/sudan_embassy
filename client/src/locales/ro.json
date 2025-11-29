@@ -43,10 +43,11 @@
   },
   "footer": {
     "embassy": "Ambasada Sudanului",
-    "quick_links": "Linkuri rapide",
+    "quick_links": "Link-uri rapide",
     "popular_services": "Servicii populare",
+    "social": "Urmărește-ne",
     "follow_us": "Urmărește-ne",
-    "copyright": "© 2023 Ambasada Republicii Sudan la București. Toate drepturile rezervate.",
+    "copyright": "© 2025 Ambasada Republicii Sudan în București. Toate drepturile rezervate.",
     "quick": ["Acasă","Servicii consulare","Programează-te","Știri și alerte","Contactează-ne"],
     "popular": ["Reînnoire pașaport","Cereri viză","Autentificare documente","Număr național","Document de călătorie de urgență"]
   },
@@ -149,13 +150,201 @@
     "login": "Autentificare administrator",
     "dashboard": "Panou de administrare",
     "logout": "Deconectare",
-    "loading": "Se încarcă..."
+    "loading": "Se încarcă...",
+    "tabs": {
+      "content_management": "Gestionare Conținut",
+      "user_data": "Date Utilizatori",
+      "configuration": "Configurare",
+      "services": "Servicii",
+      "news": "Știri",
+      "alerts": "Alerte",
+      "forms": "Formulare",
+      "appointments": "Programări",
+      "submissions": "Trimiteri",
+      "settings": "Setări"
+    },
+    "consular": {
+      "title": "Creare serviciu consular",
+      "list_title": "Lista serviciilor",
+      "name": "Nume",
+      "icon": "Pictogramă (clasă Font Awesome)",
+      "details": "Detalii",
+      "attachment": "Atașament (imagine sau PDF) (opțional)",
+      "save": "Salvează",
+      "saving": "Se salvează...",
+      "saved": "Serviciu salvat",
+      "delete": "Șterge",
+      "no_services": "Niciun serviciu încă."
+    },
+    "news": {
+      "title": "Creare știre",
+      "list_title": "Lista știrilor",
+      "news_title": "Titlu",
+      "summary": "Rezumat",
+      "tag": "Etichetă",
+      "attachment": "Atașament (imagine sau PDF)",
+      "publish": "Publică",
+      "publishing": "Se publică...",
+      "published": "Știre publicată",
+      "delete": "Șterge",
+      "no_news": "Nicio știre încă."
+    },
+    "alerts": {
+      "title": "Creare alertă",
+      "list_title": "Lista alertelor",
+      "message": "Mesaj",
+      "level": "Nivel",
+      "active": "Activ",
+      "attachment": "Atașament (opțional – imagine sau PDF)",
+      "create": "Creează alertă",
+      "created": "Alertă creată",
+      "delete": "Șterge",
+      "no_alerts": "Nicio alertă încă."
+    },
+    "forms": {
+      "title": "Încărcare formular",
+      "list_title": "Formulare",
+      "form_title": "Titlu",
+      "description": "Descriere",
+      "pdf": "PDF",
+      "save": "Salvează",
+      "uploaded": "Formular încărcat",
+      "select_pdf": "Selectați un fișier PDF",
+      "download": "Descarcă",
+      "delete": "Șterge",
+      "no_forms": "Niciun formular încă."
+    },
+    "appointments": {
+      "title": "Programări",
+      "service": "Serviciu",
+      "status": "Stare",
+      "approve": "Aprobă",
+      "reject": "Respinge",
+      "delete": "Șterge",
+      "no_appointments": "Nicio programare încă."
+    },
+    "submissions": {
+      "title": "Depuneri publice",
+      "filter": "Filtrează",
+      "all_types": "Toate tipurile",
+      "consular": "Consular",
+      "forms": "Formulare",
+      "notes": "Note",
+      "view_file": "Vezi fișier",
+      "mark_done": "Marchează ca finalizat",
+      "reject": "Respinge",
+      "no_submissions": "Nicio depunere încă."
+    },
+    "settings": {
+      "title": "Setări site",
+      "header_section": "Antet",
+      "phone": "Telefon",
+      "email": "Email",
+      "receive_email": "Primește mesaje de contact la",
+      "address": "Adresă",
+      "hero_section": "Hero",
+      "hero_title": "Titlu",
+      "hero_subtitle": "Subtitlu",
+      "hero_cta1": "CTA 1",
+      "hero_cta2": "CTA 2",
+      "status_bar": "Bară de stare",
+      "status": "Stare",
+      "holiday": "Sărbătoare",
+      "next_appointment": "Următoarea programare",
+      "emergency_section": "Urgență",
+      "emergency_phone": "Telefon",
+      "emergency_note": "Notă",
+      "hours_section": "Program",
+      "mon_thu": "Luni-Joi",
+      "fri": "Vineri",
+      "contacts_section": "Linii de contact (clasă pictogramă + text)",
+      "remove": "Elimină",
+      "add_line": "+ Adaugă linie",
+      "map_section": "Hartă",
+      "latitude": "Latitudine",
+      "longitude": "Longitudine",
+      "place_link": "Link locație",
+      "promo_section": "Slide-uri promoționale",
+      "promo_title": "Titlu",
+      "promo_cta": "CTA",
+      "promo_subtitle": "Subtitlu",
+      "promo_link": "Link",
+      "promo_image": "Imagine (URL sau /images/..)",
+      "add_slide": "+ Adaugă slide",
+      "save_settings": "Salvează setările",
+      "saved_settings": "Setări salvate"
+    },
+    "i18n": {
+      "romanian": "Română",
+      "arabic": "Arabă",
+      "name_ro": "Nume (ro)",
+      "name_ar": "Nume (ar)",
+      "details_ro": "Detalii (ro)",
+      "details_ar": "Detalii (ar)",
+      "title_ro": "Titlu (ro)",
+      "title_ar": "Titlu (ar)",
+      "summary_ro": "Rezumat (ro)",
+      "summary_ar": "Rezumat (ar)",
+      "tag_ro": "Etichetă (ro)",
+      "tag_ar": "Etichetă (ar)",
+      "message_ro": "Mesaj (ro)",
+      "message_ar": "Mesaj (ar)",
+      "description_ro": "Descriere (ro)",
+      "description_ar": "Descriere (ar)"
+    },
+    "common": {
+      "upload_progress": "Încărcare: {{progress}}%",
+      "email": "Email",
+      "password": "Parolă",
+      "login": "Autentifică-te",
+      "login_failed": "Autentificare eșuată. Verificați email-ul/parola și activați Email/Parolă în Firebase Auth."
+    }
   },
   "upload": {
     "drop_here": "Plasează fișierul aici...",
     "drag_or_click": "Trage și plasează fișierul aici sau fă clic pentru a selecta",
     "selected": "Selectat",
     "no_preview": "Fără previzualizare"
+  },
+  "settings": {
+    "header": {
+      "phone": "+40 21 123 4567",
+      "email": "info@sudanembassy.ro"
+    },
+    "statusBar": {
+      "status": "Deschis astăzi: 9:00 - 16:00",
+      "holiday": "astăzi",
+      "nextAppointment": "mâine"
+    },
+    "hours": {
+      "monThu": "9:00 - 16:00",
+      "fri": "9:00 - 13:00"
+    },
+    "contacts": [
+      { "icon": "fa-solid fa-location-dot", "text": "Strada Diplomatică 123, Sector 1, București, România" },
+      { "icon": "fa-solid fa-phone", "text": "+40 21 123 4567" },
+      { "icon": "fa-solid fa-envelope", "text": "info@sudanembassy.ro" }
+    ],
+    "emergency": {
+      "phone": "+40 722 123 456",
+      "note": "Acest număr este doar pentru urgențe reale"
+    },
+    "promoSlides": [
+      {
+        "title": "Comori ascunse – Turism cultural",
+        "subtitle": "Un grup de aproape 200 de piramide antice, numite piramidele de la Meroë, după Regatul Meroitic care a stăpânit zona peste 900 de ani. Au fost construite acum peste 2.000 de ani.",
+        "cta": "Accesează",
+        "href": "https://artsexperiments.withgoogle.com/meroe/",
+        "image": "/images/1ss.jpg"
+      },
+      {
+        "title": "Utilizarea platformei electronice de raportare a Poliției Sudaneze",
+        "subtitle": "Puteți folosi platforma electronică a Poliției Sudaneze pentru a raporta cazuri de agresiune asupra persoanei sau proprietății, vehiculelor ori bunurilor personale.",
+        "cta": "Accesează",
+        "href": "https://www.sudanpolice.net/",
+        "image": "/images/2ss.jpg"
+      }
+    ]
   }
 }
 
