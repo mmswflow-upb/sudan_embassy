@@ -10,15 +10,11 @@ function Hours() {
     fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
       .then((r) => r.json())
       .then((s) => {
-        console.log('Hours received settings:', s);
         if (s?.hours) {
-          console.log('Hours data:', s.hours);
           setHours(s.hours);
         }
       })
-      .catch((err) => {
-        console.error('Failed to fetch hours:', err);
-      });
+      .catch(() => {});
   }, [i18n.language]);
 
   if (!hours) return null;
@@ -57,21 +53,16 @@ function Contacts() {
     fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
       .then((r) => r.json())
       .then((s) => {
-        console.log('Contacts received settings:', s);
         if (s?.contacts) {
-          console.log('Contacts data:', s.contacts);
           // Convert contacts object to array format
           const contactsArray = Object.entries(s.contacts).map(([key, value]) => ({
             icon: value[0],
             text: value[1]
           }));
-          console.log('Contacts array:', contactsArray);
           setContacts(contactsArray);
         }
       })
-      .catch((err) => {
-        console.error('Failed to fetch contacts:', err);
-      });
+      .catch(() => {});
   }, [i18n.language]);
 
   if (!contacts) return null;
@@ -103,15 +94,11 @@ function Emergency() {
     fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
       .then((r) => r.json())
       .then((s) => {
-        console.log('Emergency received settings:', s);
         if (s?.emergency) {
-          console.log('Emergency data:', s.emergency);
           setEmergency(s.emergency);
         }
       })
-      .catch((err) => {
-        console.error('Failed to fetch emergency:', err);
-      });
+      .catch(() => {});
   }, [i18n.language]);
 
   if (!emergency) return null;

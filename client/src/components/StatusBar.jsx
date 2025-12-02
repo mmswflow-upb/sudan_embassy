@@ -24,15 +24,11 @@ export default function StatusBar() {
     fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
       .then((r) => r.json())
       .then((s) => {
-        console.log('StatusBar received settings:', s);
         if (s?.statusBar) {
-          console.log('StatusBar data:', s.statusBar);
-          setStatusBar(s.statusBar);
+          setSettings(s.statusBar);
         }
       })
-      .catch((err) => {
-        console.error('Failed to fetch settings:', err);
-      });
+      .catch(() => {});
   }, [i18n.language]);
 
   if (!statusBar) return null;

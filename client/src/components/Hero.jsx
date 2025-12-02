@@ -11,12 +11,16 @@ export default function Hero() {
     subtitle: "",
     cta1: "",
     cta2: "",
+    href1: "",
+    href2: "",
   });
   useEffect(() => {
     fetch(getApiUrl(`/api/settings?lang=${i18n.language}`))
       .then((r) => r.json())
       .then((s) => {
-        if (s?.hero) setHero((prev) => ({ ...prev, ...s.hero }));
+        if (s?.hero) {
+          setHero((prev) => ({ ...prev, ...s.hero }));
+        }
       });
   }, [i18n.language]);
   useEffect(() => {
@@ -36,9 +40,9 @@ export default function Hero() {
       className="bg-gradient-to-r from-sudan-green via-[#0a6b47] to-sudan-blue rounded-2xl shadow-xl overflow-hidden mb-8 relative min-h-[360px] md:min-h-[460px]"
     >
       {/* Decorative blobs */}
-      <div className="absolute -top-24 -left-24 w-72 h-72 bg-sudan-blue/40 rounded-full bg-blob" />
-      <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-sudan-green/40 rounded-full bg-blob" />
-      <div className="absolute inset-0 bg-black opacity-30" />
+      <div className="absolute -top-24 -left-24 w-72 h-72 bg-sudan-blue/40 rounded-full bg-blob pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-sudan-green/40 rounded-full bg-blob pointer-events-none" />
+      <div className="absolute inset-0 bg-black opacity-30 pointer-events-none" />
       <div className="relative z-10 flex h-full items-stretch">
         <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
           <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-3 md:mb-4 leading-tight">
@@ -49,20 +53,44 @@ export default function Hero() {
           </h2>
           <p className="text-sm md:text-base text-white mb-6 md:mb-8">{t("hero.paragraph")}</p>
           <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4">
-            <Link
-              to="/appointments"
-              className="ripple bg-white text-sudan-green hover:bg-gray-100 px-5 py-2.5 md:px-6 md:py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center text-sm md:text-base"
-            >
-              <i className="fa-solid fa-calendar-check me-2" />
-              {hero.cta1 || t("hero.cta1")}
-            </Link>
-            <Link
-              to="/consular-services"
-              className="ripple bg-sudan-black text-white hover:bg-gray-800 px-5 py-2.5 md:px-6 md:py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center text-sm md:text-base"
-            >
-              <i className="fa-solid fa-passport me-2" />
-              {hero.cta2 || t("hero.cta2")}
-            </Link>
+            {hero.href1 && hero.href1.trim() ? (
+              <a
+                href={hero.href1}
+                target="_blank"
+                rel="noreferrer"
+                className="ripple bg-white text-sudan-green hover:bg-gray-100 px-5 py-2.5 md:px-6 md:py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center text-sm md:text-base"
+              >
+                <i className="fa-solid fa-calendar-check me-2" />
+                {hero.cta1 || t("hero.cta1")}
+              </a>
+            ) : (
+              <Link
+                to="/appointments"
+                className="ripple bg-white text-sudan-green hover:bg-gray-100 px-5 py-2.5 md:px-6 md:py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center text-sm md:text-base"
+              >
+                <i className="fa-solid fa-calendar-check me-2" />
+                {hero.cta1 || t("hero.cta1")}
+              </Link>
+            )}
+            {hero.href2 && hero.href2.trim() ? (
+              <a
+                href={hero.href2}
+                target="_blank"
+                rel="noreferrer"
+                className="ripple bg-sudan-black text-white hover:bg-gray-800 px-5 py-2.5 md:px-6 md:py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center text-sm md:text-base"
+              >
+                <i className="fa-solid fa-passport me-2" />
+                {hero.cta2 || t("hero.cta2")}
+              </a>
+            ) : (
+              <Link
+                to="/consular-services"
+                className="ripple bg-sudan-black text-white hover:bg-gray-800 px-5 py-2.5 md:px-6 md:py-3 rounded-md font-medium flex items-center cursor-pointer w-full sm:w-auto justify-center text-sm md:text-base"
+              >
+                <i className="fa-solid fa-passport me-2" />
+                {hero.cta2 || t("hero.cta2")}
+              </Link>
+            )}
           </div>
         </div>
         <div className="hidden md:flex w-1/2 items-center justify-center p-4 md:p-8">

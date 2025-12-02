@@ -19,12 +19,10 @@ export default function Header() {
       .then((r) => r.json())
       .then((s) => {
         if (s?.header) {
-          setContact(s.header);
+          setHeader(s.header);
         }
       })
-      .catch((err) => {
-        console.error('Failed to fetch header settings:', err);
-      });
+      .catch(() => {});
   }, [i18n.language]);
   
   // Check if current page is an About page

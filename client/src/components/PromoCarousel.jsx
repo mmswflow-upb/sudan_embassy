@@ -20,7 +20,8 @@ export default function PromoCarousel() {
               ...slide,
               title: i18nSlide.title || slide.title,
               subtitle: i18nSlide.subtitle || slide.subtitle,
-              cta: i18nSlide.cta || slide.cta
+              cta: i18nSlide.cta || slide.cta,
+              href: i18nSlide.href || slide.href
             };
           });
           setSlides(slidesArray);
@@ -28,7 +29,7 @@ export default function PromoCarousel() {
       })
       .catch(() => {
         // Fallback to locale translations if API fails
-        const fallbackSlides = t("settings.promoSlides", { returnObjects: true });
+        const fallbackSlides = t("promoSlides", { returnObjects: true });
         setSlides(Array.isArray(fallbackSlides) ? fallbackSlides : []);
       });
   }, [i18n.language, t]);

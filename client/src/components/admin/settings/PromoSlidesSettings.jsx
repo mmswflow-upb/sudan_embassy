@@ -80,6 +80,40 @@ export default function PromoSlidesSettings({ settings, setSettings, selectedLan
                   }))
                 }
               />
+              <input
+                className="w-full border rounded px-3 py-2"
+                placeholder={t('admin.settings.promo_link')}
+                value={settings.promoSlides?.[key]?.href || ""}
+                onChange={(e) =>
+                  setSettings((s) => ({
+                    ...s,
+                    promoSlides: {
+                      ...s.promoSlides,
+                      [key]: {
+                        ...s.promoSlides[key],
+                        href: e.target.value
+                      }
+                    }
+                  }))
+                }
+              />
+              <input
+                className="w-full border rounded px-3 py-2"
+                placeholder={t('admin.settings.promo_image')}
+                value={settings.promoSlides?.[key]?.image || ""}
+                onChange={(e) =>
+                  setSettings((s) => ({
+                    ...s,
+                    promoSlides: {
+                      ...s.promoSlides,
+                      [key]: {
+                        ...s.promoSlides[key],
+                        image: e.target.value
+                      }
+                    }
+                  }))
+                }
+              />
             </div>
           </div>
         ))}

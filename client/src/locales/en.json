@@ -310,6 +310,8 @@
       "hero_subtitle": "Subtitle",
       "hero_cta1": "CTA 1",
       "hero_cta2": "CTA 2",
+      "hero_link1": "Button 1 Link (URL)",
+      "hero_link2": "Button 2 Link (URL)",
       "status_bar": "Status Bar",
       "status": "Status",
       "holiday": "Holiday",

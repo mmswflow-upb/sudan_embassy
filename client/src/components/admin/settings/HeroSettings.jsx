@@ -59,7 +59,7 @@ export default function HeroSettings({ settings, setSettings, selectedLang }) {
       />
       <label className="block text-sm mb-1">{t('admin.settings.hero_cta2')}</label>
       <input
-        className="w-full border rounded px-3 py-2"
+        className="w-full border rounded px-3 py-2 mb-2"
         value={settings.i18n?.[selectedLang]?.hero?.cta2 || ""}
         onChange={(e) =>
           setSettings((s) => ({
@@ -71,6 +71,30 @@ export default function HeroSettings({ settings, setSettings, selectedLang }) {
                 hero: { ...s.i18n[selectedLang].hero, cta2: e.target.value },
               },
             },
+          }))
+        }
+      />
+      <label className="block text-sm mb-1">{t('admin.settings.hero_link1')}</label>
+      <input
+        className="w-full border rounded px-3 py-2 mb-2"
+        placeholder="Leave empty for default /appointments"
+        value={settings.hero?.href1 || ""}
+        onChange={(e) =>
+          setSettings((s) => ({
+            ...s,
+            hero: { ...s.hero, href1: e.target.value },
+          }))
+        }
+      />
+      <label className="block text-sm mb-1">{t('admin.settings.hero_link2')}</label>
+      <input
+        className="w-full border rounded px-3 py-2"
+        placeholder="Leave empty for default /consular-services"
+        value={settings.hero?.href2 || ""}
+        onChange={(e) =>
+          setSettings((s) => ({
+            ...s,
+            hero: { ...s.hero, href2: e.target.value },
           }))
         }
       />
