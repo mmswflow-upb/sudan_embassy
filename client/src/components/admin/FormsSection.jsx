@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { getApiUrl } from "../../config.js";
-import { Field, TextInput, Button } from "../UI.jsx";
+import { Field, TextInput, TextArea, Button } from "../UI.jsx";
 import Upload from "../Upload.jsx";
 import { uploadToStorage } from "../../lib/storage.js";
 import { FormEditForm, LanguageSelector } from "./EditForms.jsx";
@@ -17,34 +17,46 @@ function withTokenHeaders(init = {}) {
 
 function useAdminList(path) {
   const [items, setItems] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+
   useEffect(() => {
     const url = path.includes('?') ? `${path}&lang=en` : `${path}?lang=en`;
     fetch(getApiUrl(url), withTokenHeaders())
-      .then((r) => r.json())
-      .then(setItems);
-  }, []);
-  return [items, setItems];
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to fetch items');
+        return r.json();
+      })
+      .then(setItems)
+      .catch((err) => {
+        console.error('Error fetching items:', err);
+        toast.error(`Failed to load items: ${err.message}`);
+        setItems([]);
+      });
+  }, [path, refreshKey]);
+
+  const refresh = () => setRefreshKey(k => k + 1);
+  return [items, setItems, refresh];
 }
 
-function FormsCreate() {
+function FormsCreate({ onSuccess }) {
   const { t } = useTranslation();
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [selectedLang, setSelectedLang] = useState("en");
   const [i18nVals, setI18nVals] = useState({
-    en: { title: "" },
-    ro: { title: "" },
-    ar: { title: "" },
+    en: { title: "", description: "" },
+    ro: { title: "", description: "" },
+    ar: { title: "", description: "" },
   });
 
   async function submit(e) {
     e.preventDefault();
-    
+
     // Validate all languages
     const missingLangs = [];
-    if (!i18nVals.en.title) missingLangs.push('English');
-    if (!i18nVals.ro.title) missingLangs.push('Romanian');
-    if (!i18nVals.ar.title) missingLangs.push('Arabic');
+    if (!i18nVals.en.title || !i18nVals.en.description) missingLangs.push('English');
+    if (!i18nVals.ro.title || !i18nVals.ro.description) missingLangs.push('Romanian');
+    if (!i18nVals.ar.title || !i18nVals.ar.description) missingLangs.push('Arabic');
     
     if (missingLangs.length > 0) {
       toast.error(`Please fill all fields for: ${missingLangs.join(', ')}`);
@@ -65,6 +77,7 @@ function FormsCreate() {
       },
       body: JSON.stringify({
         title: i18nVals.en.title,
+        description: i18nVals.en.description,
         fileUrl: downloadURL,
         i18n: i18nVals,
       }),
@@ -72,11 +85,12 @@ function FormsCreate() {
     setFile(null);
     setProgress(0);
     setI18nVals({
-      en: { title: "" },
-      ro: { title: "" },
-      ar: { title: "" },
+      en: { title: "", description: "" },
+      ro: { title: "", description: "" },
+      ar: { title: "", description: "" },
     });
     toast.success(t('admin.forms.saved'));
+    if (onSuccess) onSuccess();
   }
 
   return (
@@ -123,6 +137,18 @@ function FormsCreate() {
               }
             />
           </Field>
+          <Field label={t(`admin.i18n.description_${selectedLang}`)}>
+            <TextArea
+              rows={3}
+              value={i18nVals[selectedLang].description}
+              onChange={(e) =>
+                setI18nVals((s) => ({
+                  ...s,
+                  [selectedLang]: { ...s[selectedLang], description: e.target.value },
+                }))
+              }
+            />
+          </Field>
         </div>
       </div>
       <Button>{t('admin.forms.save')}</Button>
@@ -130,9 +156,13 @@ function FormsCreate() {
   );
 }
 
-function FormsList() {
+function FormsList({ refreshTrigger }) {
   const { t } = useTranslation();
-  const [items, setItems] = useAdminList("/api/forms");
+  const [items, setItems, refresh] = useAdminList("/api/forms");
+
+  useEffect(() => {
+    if (refreshTrigger) refresh();
+  }, [refreshTrigger]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState(null);
   const [viewLang, setViewLang] = useState('en');
@@ -241,16 +271,18 @@ function FormsList() {
 }
 
 export default function FormsSection() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   return (
     <>
       <div className="col-span-1">
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-4">Add Form</h2>
-          <FormsCreate />
+          <FormsCreate onSuccess={() => setRefreshTrigger(t => t + 1)} />
         </div>
       </div>
       <div className="col-span-1">
-        <FormsList />
+        <FormsList refreshTrigger={refreshTrigger} />
       </div>
     </>
   );

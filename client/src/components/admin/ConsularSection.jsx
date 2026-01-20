@@ -20,21 +20,31 @@ function withTokenHeaders(init = {}) {
 
 function useAdminList(path) {
   const [items, setItems] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+
   useEffect(() => {
     const url = path.includes('?') ? `${path}&lang=en` : `${path}?lang=en`;
     fetch(getApiUrl(url), withTokenHeaders())
-      .then((r) => r.json())
-      .then(setItems);
-  }, []);
-  return [items, setItems];
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to fetch items');
+        return r.json();
+      })
+      .then(setItems)
+      .catch((err) => {
+        console.error('Error fetching items:', err);
+        toast.error(`Failed to load items: ${err.message}`);
+        setItems([]);
+      });
+  }, [path, refreshKey]);
+
+  const refresh = () => setRefreshKey(k => k + 1);
+  return [items, setItems, refresh];
 }
 
-function ConsularForm() {
+function ConsularForm({ onSuccess }) {
   const { t } = useTranslation();
   const schema = z.object({
-    name: z.string().min(2),
     icon: z.string().min(1),
-    details: z.string().min(5),
   });
   const {
     register,
@@ -43,7 +53,7 @@ function ConsularForm() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", icon: "fa-solid fa-passport", details: "" },
+    defaultValues: { icon: "fa-solid fa-passport" },
   });
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -103,7 +113,13 @@ function ConsularForm() {
     reset();
     setFile(null);
     setProgress(0);
+    setI18nVals({
+      en: { name: "", details: "" },
+      ro: { name: "", details: "" },
+      ar: { name: "", details: "" },
+    });
     toast.success(t('admin.consular.saved'));
+    if (onSuccess) onSuccess();
   });
 
   return (
@@ -177,9 +193,13 @@ function ConsularForm() {
   );
 }
 
-function ConsularList() {
+function ConsularList({ refreshTrigger }) {
   const { t } = useTranslation();
-  const [items, setItems] = useAdminList("/api/consular-services");
+  const [items, setItems, refresh] = useAdminList("/api/consular-services");
+
+  useEffect(() => {
+    if (refreshTrigger) refresh();
+  }, [refreshTrigger]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState(null);
   const [viewLang, setViewLang] = useState('en');
@@ -282,16 +302,18 @@ function ConsularList() {
 }
 
 export default function ConsularSection() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   return (
     <>
       <div className="col-span-1">
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-4">Add Consular Service</h2>
-          <ConsularForm />
+          <ConsularForm onSuccess={() => setRefreshTrigger(t => t + 1)} />
         </div>
       </div>
       <div className="col-span-1">
-        <ConsularList />
+        <ConsularList refreshTrigger={refreshTrigger} />
       </div>
     </>
   );

@@ -191,20 +191,6 @@ export default function Header() {
                   {t("nav.appointments")}
                 </NavLink>
               </li>
-              <li className="relative group">
-                <NavLink
-                  to="/news"
-                  onClick={() => setAboutOpen(false)}
-                  className={({ isActive }) => {
-                    const isNewsPage = location.pathname.startsWith('/news');
-                    return `px-3 py-2 rounded-md flex items-center font-medium cursor-pointer transition-colors ${
-                      isActive || isNewsPage ? "bg-white/20 text-white" : "hover:bg-white/10"
-                    }`;
-                  }}
-                >
-                  {t("nav.news")}
-                </NavLink>
-              </li>
               <li className="relative" ref={aboutRef}>
                 <button
                   type="button"
@@ -342,20 +328,6 @@ export default function Header() {
                   className={({ isActive }) => `block py-2 px-3 rounded-md transition-colors ${isActive ? "bg-white/20 text-white font-medium" : ""}`}
                 >
                   {t("nav.appointments")}
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  onClick={() => setOpen(false)}
-                  to="/news"
-                  className={({ isActive }) => {
-                    const isNewsPage = location.pathname.startsWith('/news');
-                    return `block py-2 px-3 rounded-md transition-colors ${
-                      isActive || isNewsPage ? "bg-white/20 text-white font-medium" : ""
-                    }`;
-                  }}
-                >
-                  {t("nav.news")}
                 </NavLink>
               </li>
               <li>

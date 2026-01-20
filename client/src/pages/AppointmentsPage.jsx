@@ -1,5 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { getApiUrl } from "../config.js";
+import { 
+  validateName, 
+  validateEmail, 
+  validateFutureDate, 
+  sanitizeNotes,
+  getMinDate,
+  getMaxDate
+} from "../lib/validation.js";
 
 export default function AppointmentsPage() {
   const { t } = useTranslation();
@@ -7,8 +15,18 @@ export default function AppointmentsPage() {
     e.preventDefault();
     const formEl = e.currentTarget;
     const form = new FormData(formEl);
-    const payload = Object.fromEntries(form.entries());
+    const rawData = Object.fromEntries(form.entries());
+    
     try {
+      // Validate and sanitize all inputs
+      const payload = {
+        name: validateName(rawData.name),
+        email: validateEmail(rawData.email),
+        service: rawData.service, // from dropdown, already safe
+        date: validateFutureDate(rawData.date),
+        notes: sanitizeNotes(rawData.notes)
+      };
+      
       const res = await fetch(getApiUrl("/api/appointments"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -47,6 +65,8 @@ export default function AppointmentsPage() {
             </label>
             <input
               name="name"
+              minLength="2"
+              maxLength="100"
               className="w-full border rounded px-3 py-2"
               placeholder={t("contact.your_name")}
               required
@@ -86,6 +106,8 @@ export default function AppointmentsPage() {
             <input
               name="date"
               type="date"
+              min={getMinDate()}
+              max={getMaxDate()}
               className="w-full border rounded px-3 py-2"
               required
             />
@@ -96,6 +118,7 @@ export default function AppointmentsPage() {
             </label>
             <textarea
               name="notes"
+              maxLength="5000"
               className="w-full border rounded px-3 py-2"
               rows="4"
               placeholder={t("pages.any_additional")}

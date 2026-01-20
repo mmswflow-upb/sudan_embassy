@@ -20,46 +20,52 @@ function withTokenHeaders(init = {}) {
 
 function useAdminList(path) {
   const [items, setItems] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+
   useEffect(() => {
     const url = path.includes('?') ? `${path}&lang=en` : `${path}?lang=en`;
     fetch(getApiUrl(url), withTokenHeaders())
-      .then((r) => r.json())
-      .then(setItems);
-  }, []);
-  return [items, setItems];
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to fetch items');
+        return r.json();
+      })
+      .then(setItems)
+      .catch((err) => {
+        console.error('Error fetching items:', err);
+        toast.error(`Failed to load items: ${err.message}`);
+        setItems([]);
+      });
+  }, [path, refreshKey]);
+
+  const refresh = () => setRefreshKey(k => k + 1);
+  return [items, setItems, refresh];
 }
 
-function NewsForm() {
+function NewsForm({ onSuccess }) {
   const { t } = useTranslation();
-  const schema = z.object({
-    title: z.string().min(3),
-    summary: z.string().min(10),
-    tag: z.string().min(2),
-  });
+  // No schema validation needed - we validate i18n fields manually
   const {
-    register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: { title: "", summary: "", tag: "General" },
+    defaultValues: {},
   });
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [selectedLang, setSelectedLang] = useState("en");
   const [i18nVals, setI18nVals] = useState({
-    en: { title: "", summary: "" },
-    ro: { title: "", summary: "" },
-    ar: { title: "", summary: "" },
+    en: { title: "", summary: "", tag: "" },
+    ro: { title: "", summary: "", tag: "" },
+    ar: { title: "", summary: "", tag: "" },
   });
 
   const onSubmit = handleSubmit(async (values) => {
     // Validate all languages
     const missingLangs = [];
-    if (!i18nVals.en.title || !i18nVals.en.summary) missingLangs.push('English');
-    if (!i18nVals.ro.title || !i18nVals.ro.summary) missingLangs.push('Romanian');
-    if (!i18nVals.ar.title || !i18nVals.ar.summary) missingLangs.push('Arabic');
+    if (!i18nVals.en.title || !i18nVals.en.summary || !i18nVals.en.tag) missingLangs.push('English');
+    if (!i18nVals.ro.title || !i18nVals.ro.summary || !i18nVals.ro.tag) missingLangs.push('Romanian');
+    if (!i18nVals.ar.title || !i18nVals.ar.summary || !i18nVals.ar.tag) missingLangs.push('Arabic');
     
     if (missingLangs.length > 0) {
       toast.error(`Please fill all fields for: ${missingLangs.join(', ')}`);
@@ -83,23 +89,17 @@ function NewsForm() {
     reset();
     setFile(null);
     setProgress(0);
+    setI18nVals({
+      en: { title: "", summary: "", tag: "" },
+      ro: { title: "", summary: "", tag: "" },
+      ar: { title: "", summary: "", tag: "" },
+    });
     toast.success(t('admin.news.saved'));
+    if (onSuccess) onSuccess();
   });
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <Field label={t('admin.news.tag')}>
-        <select
-          {...register("tag")}
-          className="w-full border rounded px-3 py-2 bg-white"
-        >
-          <option value="General">General</option>
-          <option value="Visa">Visa</option>
-          <option value="Passport">Passport</option>
-          <option value="Consular">Consular</option>
-          <option value="Event">Event</option>
-        </select>
-      </Field>
       <Field label={t('admin.news.image')}>
         <Upload onFile={setFile} accept="image/*" />
         {progress > 0 && (
@@ -154,6 +154,26 @@ function NewsForm() {
               }
             />
           </Field>
+          <Field label={t(`admin.i18n.tag_${selectedLang}`)}>
+            <select
+              value={i18nVals[selectedLang].tag}
+              onChange={(e) =>
+                setI18nVals((s) => ({
+                  ...s,
+                  [selectedLang]: { ...s[selectedLang], tag: e.target.value },
+                }))
+              }
+              className="w-full border rounded px-3 py-2 bg-white"
+            >
+              <option value="">-- {t('common.select')} --</option>
+              <option value="Official">{t('news.tags.Official')}</option>
+              <option value="Announcement">{t('news.tags.Announcement')}</option>
+              <option value="Event">{t('news.tags.Event')}</option>
+              <option value="Update">{t('news.tags.Update')}</option>
+              <option value="Holiday">{t('news.tags.Holiday')}</option>
+              <option value="Important">{t('news.tags.Important')}</option>
+            </select>
+          </Field>
         </div>
       </div>
       <Button disabled={isSubmitting}>
@@ -163,9 +183,13 @@ function NewsForm() {
   );
 }
 
-function NewsList() {
+function NewsList({ refreshTrigger }) {
   const { t } = useTranslation();
-  const [items, setItems] = useAdminList("/api/news");
+  const [items, setItems, refresh] = useAdminList("/api/news");
+
+  useEffect(() => {
+    if (refreshTrigger) refresh();
+  }, [refreshTrigger]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState(null);
   const [viewLang, setViewLang] = useState('en');
@@ -265,16 +289,18 @@ function NewsList() {
 }
 
 export default function NewsSection() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   return (
     <>
       <div className="col-span-1">
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-4">Add News</h2>
-          <NewsForm />
+          <NewsForm onSuccess={() => setRefreshTrigger(t => t + 1)} />
         </div>
       </div>
       <div className="col-span-1">
-        <NewsList />
+        <NewsList refreshTrigger={refreshTrigger} />
       </div>
     </>
   );

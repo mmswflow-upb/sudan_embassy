@@ -1,7 +1,5 @@
 {
   "projects": {
-    "default": "sudan-embassy"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "sudan-embassy-webp"
+  }
 }

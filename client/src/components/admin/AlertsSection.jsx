@@ -20,28 +20,36 @@ function withTokenHeaders(init = {}) {
 
 function useAdminList(path) {
   const [items, setItems] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+
   useEffect(() => {
     const url = path.includes('?') ? `${path}&lang=en` : `${path}?lang=en`;
     fetch(getApiUrl(url), withTokenHeaders())
-      .then((r) => r.json())
-      .then(setItems);
-  }, []);
-  return [items, setItems];
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed to fetch items');
+        return r.json();
+      })
+      .then(setItems)
+      .catch((err) => {
+        console.error('Error fetching items:', err);
+        toast.error(`Failed to load items: ${err.message}`);
+        setItems([]);
+      });
+  }, [path, refreshKey]);
+
+  const refresh = () => setRefreshKey(k => k + 1);
+  return [items, setItems, refresh];
 }
 
-function AlertForm() {
+function AlertForm({ onSuccess }) {
   const { t } = useTranslation();
-  const schema = z.object({
-    message: z.string().min(5),
-  });
+  // No schema validation needed - we validate i18n fields manually
   const {
-    register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: { message: "" },
+    defaultValues: {},
   });
   const [selectedLang, setSelectedLang] = useState("en");
   const [i18nVals, setI18nVals] = useState({
@@ -110,6 +118,7 @@ function AlertForm() {
       ar: { message: "" },
     });
     toast.success(t('admin.alerts.saved'));
+    if (onSuccess) onSuccess();
   });
 
   return (
@@ -178,9 +187,13 @@ function AlertForm() {
   );
 }
 
-function AlertsList() {
+function AlertsList({ refreshTrigger }) {
   const { t } = useTranslation();
-  const [items, setItems] = useAdminList("/api/alerts");
+  const [items, setItems, refresh] = useAdminList("/api/alerts");
+
+  useEffect(() => {
+    if (refreshTrigger) refresh();
+  }, [refreshTrigger]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState(null);
   const [viewLang, setViewLang] = useState('en');
@@ -287,16 +300,18 @@ function AlertsList() {
 }
 
 export default function AlertsSection() {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   return (
     <>
       <div className="col-span-1">
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold mb-4">Add Alert</h2>
-          <AlertForm />
+          <AlertForm onSuccess={() => setRefreshTrigger(t => t + 1)} />
         </div>
       </div>
       <div className="col-span-1">
-        <AlertsList />
+        <AlertsList refreshTrigger={refreshTrigger} />
       </div>
     </>
   );

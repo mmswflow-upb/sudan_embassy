@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getApiUrl } from "../config.js";
+import { 
+  validateName, 
+  validateEmail, 
+  validatePhone, 
+  sanitizeNotes,
+  validateFile
+} from "../lib/validation.js";
 
 export default function FormsPage() {
   const { t, i18n } = useTranslation();
@@ -78,14 +85,24 @@ export default function FormsPage() {
             e.preventDefault();
             setSubmitting(true);
             try {
+              // Validate and sanitize all inputs
+              const validatedName = validateName(form.name);
+              const validatedEmail = validateEmail(form.email);
+              const validatedPhone = validatePhone(form.phone);
+              const validatedNotes = sanitizeNotes(form.notes);
+              const validatedFile = validateFile(file, {
+                maxSize: 10 * 1024 * 1024, // 10MB
+                allowedTypes: ['application/pdf', 'image/jpeg', 'image/png', 'image/gif']
+              });
+              
               const fd = new FormData();
               fd.append("type", "form");
               fd.append("relatedId", selectedFormId);
-              fd.append("name", form.name);
-              fd.append("email", form.email);
-              fd.append("phone", form.phone);
-              fd.append("notes", form.notes);
-              if (file) fd.append("file", file);
+              fd.append("name", validatedName);
+              fd.append("email", validatedEmail);
+              fd.append("phone", validatedPhone);
+              fd.append("notes", validatedNotes);
+              if (validatedFile) fd.append("file", validatedFile);
               const res = await fetch(getApiUrl("/api/submissions"), {
                 method: "POST",
                 body: fd,
@@ -141,6 +158,8 @@ export default function FormsPage() {
             </label>
             <input
               required
+              minLength="2"
+              maxLength="100"
               className="w-full border rounded px-3 py-2"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
@@ -165,7 +184,10 @@ export default function FormsPage() {
               {t("forms.phone")}
             </label>
             <input
+              type="tel"
               required
+              pattern="[\d\s\-\+\(\)]{7,20}"
+              placeholder="+40 123 456 789"
               className="w-full border rounded px-3 py-2"
               value={form.phone}
               onChange={(e) =>
@@ -178,6 +200,7 @@ export default function FormsPage() {
               {t("forms.notes")}
             </label>
             <input
+              maxLength="5000"
               className="w-full border rounded px-3 py-2"
               value={form.notes}
               onChange={(e) =>
